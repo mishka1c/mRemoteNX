@@ -6,7 +6,7 @@
 Історію змін mRemoteNG до відгалуження mRemoteNX можна переглянути в
 [репозиторії mRemoteNG](https://github.com/mRemoteNG/mRemoteNG/blob/develop/CHANGELOG.md).
 
-## [Unreleased]
+## [1.85.0] - 2026-11-27
 
 Перша версія mRemoteNX, відгалужена від mRemoteNG Community Edition 1.84.0.
 
