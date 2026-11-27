@@ -66,9 +66,11 @@ namespace mRemoteNG.Connection
             // This is exactly the upgrade scenario #95 reported: the old location on
             // disk uses the short name, a new install starts writing to the long name,
             // and without checking both the picker never surfaces the legacy file.
+            // mRemoteNX is a separate application: it only looks in its own folders and never
+            // offers the connections file of an installed mRemoteNG.
             string[] installedFolderNames = string.IsNullOrEmpty(Application.ProductName)
-                ? new[] { "mRemoteNG" }
-                : new[] { Application.ProductName, "mRemoteNG" }.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+                ? new[] { "mRemoteNX Connection Manager" }
+                : new[] { Application.ProductName };
 
             foreach (string folderName in installedFolderNames)
             {

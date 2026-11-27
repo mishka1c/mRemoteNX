@@ -87,11 +87,11 @@ namespace mRemoteNGSpecs.Drivers
 
         public string? ReadAppLog()
         {
-            // log4net writes "mRemoteNG Connection Manager.log" beside the executable; the short
+            // log4net writes "mRemoteNX Connection Manager.log" beside the executable; the short
             // name is kept for any build that still uses it. Looking for the short name only
             // meant a failed lab scenario came back with a screenshot and a UIA tree but no log —
             // which is the one artifact that says what the application actually did.
-            string? log = new[] { "mRemoteNG Connection Manager.log", "mRemoteNG.log" }
+            string? log = new[] { "mRemoteNX Connection Manager.log", "mRemoteNG.log" }
                 .Select(name => Path.Combine(Directory, name))
                 .FirstOrDefault(File.Exists);
             if (log is null) return null;

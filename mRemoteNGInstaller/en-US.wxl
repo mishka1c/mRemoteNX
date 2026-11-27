@@ -5,5 +5,5 @@
   <String Id="Install_NeedToBeAdminToInstall" Value="You need to be an administrator to install this product." />
   <String Id="Feature_DesktopShortcut" Value="Desktop Shortcut" />
   <String Id="Feature_StartMenuShortcut" Value="Start Menu Shortcut" />
-  <String Id="FinishPage_LaunchMremoteNow" Value="Launch mRemoteNG now" />
+  <String Id="FinishPage_LaunchMremoteNow" Value="Launch mRemoteNX now" />
 </WixLocalization>

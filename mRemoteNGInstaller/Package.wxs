@@ -2,15 +2,15 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <Package Name="mRemoteNG (64 bit)"
-           Manufacturer="mRemoteNG Open Source Project"
+  <Package Name="mRemoteNX (64 bit)"
+           Manufacturer="mRemoteNX"
            Version="$(var.ProductVersion)"
-           UpgradeCode="dd678a54-ca75-4791-8dfe-d818095684f8"
+           UpgradeCode="6f2b9e1c-4a7d-4c38-9b51-2d0e8a7c3f95"
            Compressed="yes"
            InstallerVersion="500"
            Scope="perMachine">
 
-    <SummaryInformation Description="mRemoteNG - Multi-Remote Next Generation Connection Manager" />
+    <SummaryInformation Description="mRemoteNX - password-protected multi-remote connection manager (mRemoteNG fork)" />
 
     <!-- #120: nightlies all share MSI ProductVersion (prerelease suffix stripped),
          so AllowSameVersionUpgrades is required for the upgrade to fire; and
@@ -26,12 +26,12 @@
     <!-- Add/Remove Programs metadata -->
     <Icon Id="AppIcon.ico" SourceFile="Installer\Resources\AppIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
-    <Property Id="ARPHELPLINK" Value="https://github.com/robertpopa22/mRemoteNG" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/mishka1c/mRemoteNX" />
 
     <!-- Restore install directory from previous installations -->
     <Property Id="INSTALLFOLDER">
-      <RegistrySearch Id="mRemoteNGRegistry" Type="raw" Root="HKLM"
-                      Key="Software\mRemoteNG" Name="InstallDir" />
+      <RegistrySearch Id="mRemoteNXRegistry" Type="raw" Root="HKLM"
+                      Key="Software\mRemoteNX" Name="InstallDir" />
     </Property>
 
     <!-- Administrator required for per-machine install -->
@@ -39,18 +39,18 @@
 
     <!-- Directory structure -->
     <StandardDirectory Id="ProgramFiles64Folder">
-      <Directory Id="INSTALLFOLDER" Name="mRemoteNG" />
+      <Directory Id="INSTALLFOLDER" Name="mRemoteNX" />
     </StandardDirectory>
 
     <StandardDirectory Id="DesktopFolder" />
 
     <StandardDirectory Id="ProgramMenuFolder">
-      <Directory Id="ApplicationProgramsFolder" Name="mRemoteNG" />
+      <Directory Id="ApplicationProgramsFolder" Name="mRemoteNX" />
     </StandardDirectory>
 
     <!-- Save install location in registry -->
     <Component Id="RegistryEntries" Directory="INSTALLFOLDER">
-      <RegistryKey Root="HKLM" Key="Software\mRemoteNG">
+      <RegistryKey Root="HKLM" Key="Software\mRemoteNX">
         <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLFOLDER]" KeyPath="yes" />
       </RegistryKey>
     </Component>
@@ -64,25 +64,25 @@
 
     <!-- Desktop shortcut (optional feature) -->
     <Component Id="DesktopShortcutComp" Directory="DesktopFolder">
-      <Shortcut Id="DesktopShortcut" Name="mRemoteNG"
+      <Shortcut Id="DesktopShortcut" Name="mRemoteNX"
                 Target="[INSTALLFOLDER]mRemoteNG.exe"
                 WorkingDirectory="INSTALLFOLDER" Icon="AppIcon.ico" />
-      <RegistryValue Root="HKCU" Key="Software\mRemoteNG"
+      <RegistryValue Root="HKCU" Key="Software\mRemoteNX"
                      Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
     </Component>
 
     <!-- Start Menu shortcut (optional feature) -->
     <Component Id="StartMenuShortcutComp" Directory="ApplicationProgramsFolder">
-      <Shortcut Id="StartMenuShortcut" Name="mRemoteNG"
+      <Shortcut Id="StartMenuShortcut" Name="mRemoteNX"
                 Target="[INSTALLFOLDER]mRemoteNG.exe"
                 WorkingDirectory="INSTALLFOLDER" Icon="AppIcon.ico" />
       <RemoveFolder Id="RemoveStartMenuFolder" On="uninstall" />
-      <RegistryValue Root="HKCU" Key="Software\mRemoteNG"
+      <RegistryValue Root="HKCU" Key="Software\mRemoteNX"
                      Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
     </Component>
 
     <!-- Features -->
-    <Feature Id="MainFeature" Title="mRemoteNG" AllowAbsent="no"
+    <Feature Id="MainFeature" Title="mRemoteNX" AllowAbsent="no"
              ConfigurableDirectory="INSTALLFOLDER" Display="expand" Level="1">
       <ComponentGroupRef Id="AppFiles" />
       <ComponentRef Id="RegistryEntries" />

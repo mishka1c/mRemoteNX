@@ -31,8 +31,8 @@
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <SignAssembly>False</SignAssembly>
     <Title>Multi-Remote Next Generation Connection Manager</Title>
-    <Product>mRemoteNG Connection Manager</Product>
-    <Company>mRemoteNG Open Source Project</Company>
+    <Product>mRemoteNX Connection Manager</Product>
+    <Company>mRemoteNX</Company>
     <Authors>mRemoteNG Dev Team</Authors>
     <RepositoryUrl>https://github.com/mishka1c/mRemoteNX.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

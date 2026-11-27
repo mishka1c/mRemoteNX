@@ -106,13 +106,13 @@ jobs:
           using System.Reflection;
           using System.Resources;
           //Build nr: $build
-          [assembly: AssemblyTitle("mRemoteNG")]
+          [assembly: AssemblyTitle("mRemoteNX")]
           [assembly: AssemblyDescription("Multi-Remote Next Generation Connection Manager")]
           [assembly: AssemblyConfiguration("$platform")]
-          [assembly: AssemblyCompany("Profi-KOM Ltd.")]
-          [assembly: AssemblyProduct("mRemoteNG Connection Manager")]
+          [assembly: AssemblyCompany("mRemoteNX")]
+          [assembly: AssemblyProduct("mRemoteNX Connection Manager")]
           [assembly: AssemblyCopyright("(c) $year mRemoteNG")]
-          [assembly: AssemblyTrademark("Profi-KOM LTd.")]
+          [assembly: AssemblyTrademark("mRemoteNX")]
           [assembly: AssemblyCulture("")]
           [assembly: AssemblyVersion("$major.$minor.$revision.$build")]
           [assembly: AssemblyFileVersion("$major.$minor.$revision.$build")]

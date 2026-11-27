@@ -53,7 +53,7 @@
             class="Machine"
             displayName="$(string.AllowSavePasswords)"
             explainText="$(string.AllowSavePasswords_Help)"
-            key="SOFTWARE\mRemoteNG\Credentials"
+            key="SOFTWARE\mRemoteNX\Credentials"
             valueName="AllowSavePasswords">
       <parentCategory ref="Credentials" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -65,7 +65,7 @@
             class="Machine"
             displayName="$(string.AllowSaveUsernames)"
             explainText="$(string.AllowSaveUsernames_Help)"
-            key="SOFTWARE\mRemoteNG\Credentials"
+            key="SOFTWARE\mRemoteNX\Credentials"
             valueName="AllowSaveUsernames">
       <parentCategory ref="Credentials" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -77,7 +77,7 @@
             class="Machine"
             displayName="$(string.AllowExportPasswords)"
             explainText="$(string.AllowExportPasswords_Help)"
-            key="SOFTWARE\mRemoteNG\Credentials"
+            key="SOFTWARE\mRemoteNX\Credentials"
             valueName="AllowExportPasswords">
       <parentCategory ref="Credentials" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -89,7 +89,7 @@
             class="Machine"
             displayName="$(string.AllowExportUsernames)"
             explainText="$(string.AllowExportUsernames_Help)"
-            key="SOFTWARE\mRemoteNG\Credentials"
+            key="SOFTWARE\mRemoteNX\Credentials"
             valueName="AllowExportUsernames">
       <parentCategory ref="Credentials" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -105,7 +105,7 @@
             class="Machine"
             displayName="$(string.AllowCheckForUpdates)"
             explainText="$(string.AllowCheckForUpdates_Help)"
-            key="SOFTWARE\mRemoteNG\Updates"
+            key="SOFTWARE\mRemoteNX\Updates"
             valueName="AllowCheckForUpdates">
       <parentCategory ref="Updates" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -117,7 +117,7 @@
             class="Machine"
             displayName="$(string.AllowCheckForUpdatesAutomatical)"
             explainText="$(string.AllowCheckForUpdatesAutomatical_Help)"
-            key="SOFTWARE\mRemoteNG\Updates"
+            key="SOFTWARE\mRemoteNX\Updates"
             valueName="AllowCheckForUpdatesAutomatical">
       <parentCategory ref="Updates" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -129,7 +129,7 @@
             class="Machine"
             displayName="$(string.AllowCheckForUpdatesManual)"
             explainText="$(string.AllowCheckForUpdatesManual_Help)"
-            key="SOFTWARE\mRemoteNG\Updates"
+            key="SOFTWARE\mRemoteNX\Updates"
             valueName="AllowCheckForUpdatesManual">
       <parentCategory ref="Updates" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -145,7 +145,7 @@
             class="Machine"
             displayName="$(string.AllowLogging)"
             explainText="$(string.AllowLogging_Help)"
-            key="SOFTWARE\mRemoteNG\Notifications"
+            key="SOFTWARE\mRemoteNX\Notifications"
             valueName="AllowLogging">
       <parentCategory ref="Notifications" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -157,7 +157,7 @@
             class="Machine"
             displayName="$(string.AllowNotifications)"
             explainText="$(string.AllowNotifications_Help)"
-            key="SOFTWARE\mRemoteNG\Notifications"
+            key="SOFTWARE\mRemoteNX\Notifications"
             valueName="AllowNotifications">
       <parentCategory ref="Notifications" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />
@@ -169,7 +169,7 @@
             class="Machine"
             displayName="$(string.AllowPopups)"
             explainText="$(string.AllowPopups_Help)"
-            key="SOFTWARE\mRemoteNG\Notifications"
+            key="SOFTWARE\mRemoteNX\Notifications"
             valueName="AllowPopups">
       <parentCategory ref="Notifications" />
       <supportedOn ref="SUPPORTED_mRemoteNG_1_81" />

@@ -9,7 +9,7 @@ namespace mRemoteNG.App.Info
         #region General Parameters
 
         public const RegistryHive Hive = RegistryHive.LocalMachine;
-        public const string RootKey = "SOFTWARE\\mRemoteNG";
+        public const string RootKey = "SOFTWARE\\mRemoteNX";
         private const string OptionsSubKey = "Options";
 
         #endregion

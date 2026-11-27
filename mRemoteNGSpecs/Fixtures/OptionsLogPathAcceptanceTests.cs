@@ -23,7 +23,7 @@ namespace mRemoteNGSpecs.Fixtures
     [NonParallelizable]
     public class OptionsLogPathAcceptanceTests : UiAcceptanceTestBase
     {
-        private string ElsewhereLog => Path.Combine(Deployment.Directory, "another-copy", "mRemoteNG Connection Manager.log");
+        private string ElsewhereLog => Path.Combine(Deployment.Directory, "another-copy", "mRemoteNX Connection Manager.log");
 
         protected override void SeedSettings()
         {
