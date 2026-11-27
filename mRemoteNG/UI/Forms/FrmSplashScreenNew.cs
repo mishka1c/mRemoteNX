@@ -98,20 +98,24 @@ namespace mRemoteNG.UI.Forms
             Font titleFont = brandFont ?? fallbackFont;
 
             const string mGlyph = "m";
-            const string restGlyph = "RemoteNG";
+            const string restGlyph = "Remote";
+            const string suffixGlyph = "NX";
             SizeF mSize = g.MeasureString(mGlyph, titleFont);
             SizeF restSize = g.MeasureString(restGlyph, titleFont);
+            SizeF suffixSize = g.MeasureString(suffixGlyph, titleFont);
             // Kerning fudge — the custom brand font leaves too much air between
-            // the 'm' and the 'R' when measured independently, so trim a touch.
+            // glyph runs measured independently, so trim a touch at each joint.
             float kern = 16f * scale;
-            float titleWidth = mSize.Width + restSize.Width - kern;
+            float titleWidth = mSize.Width + restSize.Width + suffixSize.Width - 2 * kern;
             float titleX = (Width - titleWidth) / 2f;
             float titleY = tops.Title;
 
+            // mRemoteNX wordmark: blue "m", white "Remote", blue "NX".
             using SolidBrush blueBrush = new(Color.FromArgb(0x52, 0x89, 0xF9));
             using SolidBrush whiteBrush = new(Color.FromArgb(0xE8, 0xEB, 0xEE));
             g.DrawString(mGlyph, titleFont, blueBrush, titleX, titleY);
             g.DrawString(restGlyph, titleFont, whiteBrush, titleX + mSize.Width - kern, titleY);
+            g.DrawString(suffixGlyph, titleFont, blueBrush, titleX + mSize.Width + restSize.Width - 2 * kern, titleY);
 
             // Version — centered beneath the title.
             using Font versionFont = new("Segoe UI", 16f * 96f / 72f * scale, FontStyle.Regular, GraphicsUnit.Pixel);
