@@ -91,7 +91,7 @@ namespace mRemoteNG.UI.Forms
 
         private void llLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl($"https://raw.githubusercontent.com/{GeneralAppInfo.ForkOwner}/mRemoteNG/main/COPYING.txt");
+            OpenUrl($"https://raw.githubusercontent.com/{GeneralAppInfo.ForkOwner}/{GeneralAppInfo.ForkRepo}/main/COPYING.txt");
             Close();
         }
 

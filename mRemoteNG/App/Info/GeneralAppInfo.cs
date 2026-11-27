@@ -21,20 +21,20 @@ namespace mRemoteNG.App.Info
         public const string UrlForum = "https://github.com/orgs/mRemoteNG/discussions";
         public const string UrlChat = "https://app.element.io/#/room/#mremoteng:matrix.org";
         public const string UrlCommunity = "https://www.reddit.com/r/mRemoteNG";
-        public const string UrlBugs = "https://github.com/robertpopa22/mRemoteNG/issues/new";
-        public const string CrashReportOwner = "robertpopa22";
-        public const string CrashReportRepo = "mRemoteNG";
+        public const string UrlBugs = "https://github.com/mishka1c/mRemoteNX/issues/new";
+        public const string CrashReportOwner = "mishka1c";
+        public const string CrashReportRepo = "mRemoteNX";
         public const string UrlDocumentation = "https://mremoteng.readthedocs.io/en/latest/";
 
         // Fork-specific URLs
-        public const string ForkOwner = "robertpopa22";
-        public const string ForkRepo = "mRemoteNG";
-        public const string UrlForkHome = "https://github.com/robertpopa22/mRemoteNG";
-        public const string UrlForkStars = "https://github.com/robertpopa22/mRemoteNG/stargazers";
-        public const string UrlForkReleases = "https://github.com/robertpopa22/mRemoteNG/releases";
-        public const string UrlForkChangelog = "https://github.com/robertpopa22/mRemoteNG/blob/main/CHANGELOG.md";
+        public const string ForkOwner = "mishka1c";
+        public const string ForkRepo = "mRemoteNX";
+        public const string UrlForkHome = "https://github.com/mishka1c/mRemoteNX";
+        public const string UrlForkStars = "https://github.com/mishka1c/mRemoteNX/stargazers";
+        public const string UrlForkReleases = "https://github.com/mishka1c/mRemoteNX/releases";
+        public const string UrlForkChangelog = "https://github.com/mishka1c/mRemoteNX/blob/main/CHANGELOG.md";
         // The F1 manual is the upstream one and documents none of this fork's additions.
-        public const string UrlForkUserGuide = "https://github.com/robertpopa22/mRemoteNG/blob/main/docs/USER-GUIDE.md";
+        public const string UrlForkUserGuide = "https://github.com/mishka1c/mRemoteNX/blob/main/docs/USER-GUIDE.md";
         public static readonly string ApplicationVersion = Application.ProductVersion;
         public static readonly string BuildId = ResolveBuildId(Assembly.GetExecutingAssembly(), ApplicationVersion);
         public static readonly string ProductName = Application.ProductName ?? string.Empty;

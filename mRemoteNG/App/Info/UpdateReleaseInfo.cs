@@ -6,7 +6,8 @@ namespace mRemoteNG.App.Info
     [SupportedOSPlatform("windows")]
     public static class UpdateReleaseInfo
     {
-        private const string GITHUB_API_URI = "https://api.github.com/repos/robertpopa22/mRemoteNG/releases/latest";
+        // mRemoteNX: updates come only from this fork's own releases, never from upstream.
+        private const string GITHUB_API_URI = "https://api.github.com/repos/" + GeneralAppInfo.ForkOwner + "/" + GeneralAppInfo.ForkRepo + "/releases/latest";
 
         // This fork distributes exclusively via GitHub Releases, so the update check always queries
         // the latest published release. The upstream project's Stable/Preview/Nightly text-file

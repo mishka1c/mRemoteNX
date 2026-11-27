@@ -70,6 +70,6 @@ public class UpdaterTests
         // This fork distributes only via GitHub Releases; the upstream mremoteng.org
         // channels were removed in #136. Guard against the endpoint drifting back.
         Uri uri = UpdateReleaseInfo.GetLatestReleaseApiUri();
-        Assert.That(uri.ToString(), Is.EqualTo("https://api.github.com/repos/robertpopa22/mRemoteNG/releases/latest"));
+        Assert.That(uri.ToString(), Is.EqualTo("https://api.github.com/repos/mishka1c/mRemoteNX/releases/latest"));
     }
 }
