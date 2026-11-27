@@ -105,7 +105,7 @@ namespace mRemoteNG.UI.Menu
             _mMenForkGuide.Name = "mMenForkGuide";
             _mMenForkGuide.Size = new System.Drawing.Size(190, 22);
             // F1 opens the upstream manual, which documents none of this fork's additions.
-            _mMenForkGuide.Text = "Fork Features Guide";
+            _mMenForkGuide.Text = "mRemoteNX User Guide";
             _mMenForkGuide.Click += mMenForkGuide_Click;
             //
             // mMenKeyboardShortcuts
@@ -169,9 +169,8 @@ namespace mRemoteNG.UI.Menu
             //
             _mMenInfoDonate.Name = "mMenInfoDonate";
             _mMenInfoDonate.Size = new System.Drawing.Size(190, 22);
-            // The upstream donate URL 404s; this fork's donations go to the maintainer's
-            // non-profit (see GeneralAppInfo.UrlDonate), so the label must say so.
-            _mMenInfoDonate.Text = "Support the Geseidl Association";
+            // mRemoteNX takes no donations (see GeneralAppInfo.UrlDonate).
+            _mMenInfoDonate.Visible = false;
             _mMenInfoDonate.Click += mMenInfoDonate_Click;
             //
             // mMenInfoForum
@@ -228,14 +227,12 @@ namespace mRemoteNG.UI.Menu
         {
             Text = Language._Help;
             _mMenInfoHelp.Text = Language.MenuItem_HelpContents;
-            _mMenForkGuide.Text = "Fork Features Guide";
+            _mMenForkGuide.Text = "mRemoteNX User Guide";
             _mMenForkGitHub.Text = Language.MenuItem_ForkGitHub;
             _mMenForkReleases.Text = Language.MenuItem_ForkReleases;
             _mMenForkReportIssue.Text = Language.MenuItem_ForkReportIssue;
             _mMenInfoWebsite.Text = Language.MenuItem_OriginalWebsite;
-            // The upstream donate URL 404s; this fork's donations go to the maintainer's
-            // non-profit (see GeneralAppInfo.UrlDonate), so the label must say so.
-            _mMenInfoDonate.Text = "Support the Geseidl Association";
+            _mMenInfoDonate.Visible = false;
             _mMenInfoForum.Text = Language.MenuItem_OriginalForum;
             _mMenInfoChat.Text = Language.MenuItem_OriginalChat;
             _mMenInfoCommunity.Text = Language.MenuItem_OriginalCommunity;

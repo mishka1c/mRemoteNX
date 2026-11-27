@@ -30,12 +30,8 @@ An existing explicit manual preference is retained when upgrading.
 
 ## Visual verification
 
-Run the interactive fixtures in the isolated Windows lab, not against an operator
-profile:
-
-```powershell
-.\lab-run.ps1 -Filter 'FullyQualifiedName~VisualLayoutAuditAcceptanceTests|FullyQualifiedName~FormGalleryAuditTests' -Artifacts
-```
+Run the interactive fixtures in a throwaway Windows virtual machine, not against your own
+profile, filtered to `FullyQualifiedName~VisualLayoutAuditAcceptanceTests|FullyQualifiedName~FormGalleryAuditTests`.
 
 `VisualLayoutAuditAcceptanceTests` starts the real executable with synthetic
 connections. It navigates all 13 Options pages at two window sizes, covers Windows

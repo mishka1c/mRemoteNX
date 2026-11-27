@@ -1,48 +1,30 @@
 ---
-name: Bug report
-about: Report a problem — your report and your retest are what make fixes real here
+name: Повідомити про помилку
+about: Опишіть проблему в mRemoteNX
 labels: bug
 ---
 
 <!--
-Thank you! A few honest words about how this fork works, so you know what to expect:
-
-This fork uses automated development and verification, and we use mRemoteNG ourselves daily.
-Each reply should name the tests and UI checks actually performed, their limits, and the exact
-published build to try. Our lab cannot reproduce every network, server, locale or display setup.
-That means:
-
-  * your report below is the start of the fix,
-  * your retest establishes whether the reported symptom is resolved in YOUR setup.
-
-Sometimes a fix is right first try, sometimes it takes rounds. You will never be asked to
-retest blind fixes indefinitely — after two unproven fixes, the next step is diagnostics;
-after three failed rounds, work stops for human review or new evidence. A partially improved
-report stays open for the remaining symptoms. Logs and screenshots help us distinguish them.
-Full details: see pinned issue #167.
-
-If this project helps you, please star it: https://github.com/robertpopa22/mRemoteNG
-Qodo's free open-source plan requires at least 200 stars on this repository (or on another public repository in the same GitHub organization). Other tools we use ask for more. A star is what keeps those tools available.
+Дякуємо за повідомлення! Про вразливості пишіть приватно — див. SECURITY.md.
+Перед публікацією приберіть паролі, імена серверів і облікових записів.
+Не додавайте свій файл підключень.
 -->
 
-**What happens** (and what you expected instead):
+**Що відбувається** (і що мало відбуватися):
 
 
-**Steps to reproduce:**
+**Кроки для відтворення:**
 
 1.
 2.
 3.
 
-**Version and build** (copy Help → About; include portable or installed, x86/x64/ARM64):
+**Версія** (скопіюйте з Help → About; портативна чи встановлена, x86/x64/ARM64):
 
-**Environment** (OS version; RDP/SSH/VNC target if relevant; anything unusual — locale, multi-monitor, VM):
+**Середовище** (версія Windows; протокол і сервер, якщо це важливо; кілька моніторів, віртуальна машина тощо):
 
-**For visual/layout problems** (theme, affected monitor's scaling percentage, local or remote desktop):
-
-**Log excerpt** (`%LOCALAPPDATA%\mRemoteNG Connection Manager\mRemoteNG Connection Manager.log` when installed; for portable, `mRemoteNG Connection Manager.log` beside `mRemoteNG.exe`, or the same `%LOCALAPPDATA%` path when that folder is read-only — the last ~30 lines around the problem. A startup failure shown in a Windows/.NET dialog before the app starts leaves no line in it):
-
-Remove credentials and identifying server/account details before sharing. Do not attach your connection database.
+**Журнал** (останні ~30 рядків навколо проблеми з файлу `mRemoteNX Connection Manager.log` — він лежить
+поруч із `mRemoteNG.exe` або в `%LOCALAPPDATA%\mRemoteNX Connection Manager\`):
 
 ```
 ```

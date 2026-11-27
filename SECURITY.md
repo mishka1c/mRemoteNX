@@ -1,67 +1,53 @@
-# Security Policy
+# Безпека
 
-## Supported Versions
+## Підтримувані версії
 
-| Version | Supported |
-|---------|-----------|
-| 1.82.x | :white_check_mark: Latest stable release |
-| 1.81.x | :white_check_mark: Previous stable |
-| 1.76.x and earlier | :x: End of life |
+Виправлення безпеки випускаються лише для останнього релізу mRemoteNX.
 
-## Reporting a Vulnerability
+## Як повідомити про вразливість
 
-**Please do NOT report security vulnerabilities through public GitHub issues.**
+**Не публікуйте вразливості у відкритих Issues.** Повідомте приватно:
 
-Instead, use one of these channels:
+- на GitHub: [Security → Report a vulnerability](https://github.com/mishka1c/mRemoteNX/security/advisories/new);
+- або напишіть власнику репозиторію на [Gitea](https://gitea.mykino.uk/mishka1c).
 
-1. **GitHub Security Advisories (preferred):**
-   Go to [Security → Advisories → New draft advisory](https://github.com/robertpopa22/mRemoteNG/security/advisories/new) to report privately.
+Що вказати:
 
-2. **Email:** Create a private advisory on GitHub (no public email for security reports).
+- опис вразливості;
+- кроки, щоб її відтворити;
+- версію mRemoteNX;
+- можливі наслідки (якщо відомо).
 
-### What to include
+## Як mRemoteNX захищає дані
 
-- Description of the vulnerability
-- Steps to reproduce
-- Affected version(s)
-- Impact assessment (if known)
+- **Пароль програми.** Без нього програма не відкривається; після заданої кількості невірних спроб
+  (за замовчуванням 15) вона закривається.
+- **Шифрування файлу підключень.** Весь `confCons.xml` шифрується AES-256-GCM. Ключ виводиться з
+  пароля програми через PBKDF2 (600 000 ітерацій за замовчуванням). Сам пароль ніде не зберігається.
+- **Блокування після простою.** Вікно блокується і ховається в трей (за замовчуванням через 15 хвилин).
+- **Перегляд паролів.** Скопіювати пароль підключення можна лише після повторного введення пароля
+  програми.
+- **Інші дані** (наприклад, пароль до SQL-сервера в налаштуваннях) шифруються механізмом Windows DPAPI
+  для поточного користувача.
 
-### Response timeline
+Обмеження, про які варто знати:
 
-- **Acknowledgment:** within 48 hours
-- **Initial assessment:** within 7 days
-- **Fix or mitigation:** depends on severity (critical: ASAP, high: 14 days, medium: 30 days)
+- поки програма розблокована, розшифровані паролі є в пам'яті процесу;
+- пароль неможливо відновити — без нього дані не розшифрувати;
+- якщо вимкнути пароль програми в налаштуваннях, файл підключень знову можна зберігати з ключем
+  за замовчуванням, тобто фактично без захисту.
 
-### What to expect
+## Підпис збірок
 
-- You will receive an acknowledgment with a tracking reference
-- We will keep you informed of progress toward a fix
-- We will credit you in the release notes (unless you prefer anonymity)
-- We will NOT take legal action against researchers who follow responsible disclosure
+Збірки **не підписані** сертифікатом Authenticode. Для перевірки завантаженого файлу разом із кожним
+релізом публікується `checksums-SHA256.txt`:
 
-## Code Signing
+```powershell
+Get-FileHash .\mRemoteNX-*.zip -Algorithm SHA256
+```
 
-Release builds are **not** Authenticode-signed yet. SignPath Foundation declined this fork on 2026-03-05: after a second internal review they found that `robertpopa22/mRemoteNG` does not yet provide sufficient external reputation signals.
-The CI is prepared for signing and the route is being re-evaluated; until then, verify downloads
-against the `checksums-SHA256.txt` published with every release. Current status and history:
-[`CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md).
+## Помилкові спрацювання антивірусів
 
-## Security Measures
-
-- **DPAPI encryption** for stored credentials (Windows Data Protection API)
-- **No plaintext secrets** in configuration files
-- **CI security scanning** via CodeQL (weekly) and SonarCloud (per push)
-- **Dependency scanning** via GitHub Dependabot
-- **Code review** required for all pull requests
-
-## Antivirus False Positives
-
-mRemoteNG uses legitimate Windows APIs (SendInput, DPAPI, COM Interop) that may trigger
-heuristic antivirus detections. These are **false positives**. See
-[`docs/ANTIVIRUS_FALSE_POSITIVE.md`](docs/ANTIVIRUS_FALSE_POSITIVE.md) for details.
-
-## Star the project
-
-If this project helps you, please [star the repository](https://github.com/robertpopa22/mRemoteNG).
-
-Some of the community tools we use set a public-star minimum before they will work with a project. [Qodo's free plan for open source](https://docs.qodo.ai/open-source-program) requires at least 200 stars on this repository, or on another public repository in the same GitHub organization. Other tools we use ask for more than that. A star is what keeps those tools available here.
+Програма використовує звичайні функції Windows (імітація натискань клавіш, DPAPI, COM-компонент RDP),
+на які антивіруси інколи реагують помилково. Якщо антивірус блокує файл, перевірте контрольну суму і
+додайте папку програми у винятки.

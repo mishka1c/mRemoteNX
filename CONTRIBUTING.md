@@ -1,101 +1,80 @@
-# Contributing to mRemoteNG
+# Як зібрати mRemoteNX і долучитися до розробки
 
-Thank you for your interest in contributing to mRemoteNG! This guide will help you get started.
+## Що потрібно
 
-## Getting Started
+- **Windows 10/11** — mRemoteNX працює лише на Windows (WinForms).
+- **Visual Studio 2026** (або 2022) чи Build Tools з навантаженнями:
+  - .NET desktop development;
+  - Desktop development with C++ (для COM-посилань).
+- **.NET 10 SDK**.
+- **Git**.
 
-### Prerequisites
+## Збірка
 
-- **Windows 10/11** (mRemoteNG is a Windows-only WinForms application)
-- **Visual Studio 2022 or later** with the following workloads:
-  - .NET desktop development
-  - Desktop development with C++  (for COM reference support)
-- **.NET 10 SDK** (or later)
-- **Git**
-
-### Building
-
-> **Important:** Do NOT use `dotnet build` — it fails on COM references (`MSB4803`).
-> mRemoteNG requires full MSBuild from Visual Studio.
+> `dotnet build` не підходить: він не вміє обробляти COM-посилання на RDP-компонент (`MSB4803`).
+> Потрібен повний MSBuild із Visual Studio.
 
 ```powershell
-# Clone the repository
-git clone https://github.com/mRemoteNG/mRemoteNG.git
-cd mRemoteNG
-
-# Build using the build script (auto-detects VS installation)
+git clone https://gitea.mykino.uk/mishka1c/mRemoteNX.git
+cd mRemoteNX
 pwsh -NoProfile -ExecutionPolicy Bypass -File build.ps1
 ```
 
-The output will be in `mRemoteNG/bin/x64/Release/`.
+Результат — у `mRemoteNG/bin/x64/Release/`. Скрипт сам знаходить Visual Studio.
 
-### Running Tests
+Без Visual Studio можна зібрати на GitHub: **Actions → Nightly Build → Run workflow**. Готові zip і MSI
+з'являться в релізі **nightly**.
+
+## Тести
 
 ```powershell
-# Build test projects (from VS Developer Command Prompt)
-msbuild mRemoteNGTests\mRemoteNGTests.csproj -restore -m "-verbosity:minimal" "-p:Configuration=Release" "-p:Platform=x64"
-
-# Run tests (use the DLL path, not the .csproj)
-dotnet test "mRemoteNGTests\bin\x64\Release\mRemoteNGTests.dll" --verbosity normal
+pwsh -NoProfile -ExecutionPolicy Bypass -File run-tests.ps1 -Headless
 ```
 
-## Branch Naming Convention
+Окрему групу тестів можна запустити так:
 
-| Prefix | When | Example |
-|--------|------|---------|
-| `fix/<issue>-<desc>` | Bug fix | `fix/2735-rdp-smartsize-focus` |
-| `feat/<issue>-<desc>` | New feature | `feat/1634-protocol-token` |
-| `security/<desc>` | Security hardening | `security/ldap-sanitizer` |
-| `chore/<desc>` | Infra, deps, CI | `chore/sqlclient-sni-runtime` |
+```powershell
+dotnet test "mRemoteNGTests\bin\x64\Release\mRemoteNGTests.dll" --verbosity normal --filter "FullyQualifiedName~mRemoteNGTests.Security"
+```
 
-**Rules:**
-- Include the issue number after `/` when an issue exists
-- Lowercase, kebab-case, max 50 chars after prefix
-- No tool prefixes (`codex/`, `copilot/`) in branch names
+Правила:
 
-## Pull Request Workflow
+- запускайте тести з DLL, а не з `.csproj`;
+- `--verbosity normal` обов'язково (інакше тестовий процес падає на .NET 10);
+- тести не повинні показувати вікна чи чекати дій користувача.
 
-1. Fork the repository
-2. Create a branch from `v1.78.2-dev`: `git checkout -b fix/<issue>-<desc>`
-3. Make your changes
-4. Ensure all tests pass locally
-5. Push and create a PR targeting `v1.78.2-dev` on upstream
+## Як надсилати зміни
 
-### PR Guidelines
+1. Зробіть форк репозиторію на Gitea або GitHub.
+2. Створіть гілку від `main`.
+3. Внесіть зміни, зберіть програму і запустіть тести.
+4. Відкрийте запит на злиття (pull request) у `main`.
 
-- Keep PRs focused — one fix or feature per PR
-- Include the issue number in the PR title (e.g., "Fix #2735: RDP SmartSize focus loss")
-- Add tests for new functionality
-- Don't introduce new warnings
+Прохання:
 
-## Architecture Overview
+- один запит — одна зміна;
+- не послаблюйте захист: шифрування, перевірку сертифікатів і ключів хостів, роботу з паролями;
+- коментарі в коді й повідомлення комітів — англійською, як у решті коду;
+- нові параметри інтерфейсу додавайте в [docs/UI-MAP.md](docs/UI-MAP.md).
 
-See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for a detailed breakdown of the system layers.
+## Будова програми
 
-Key directories:
-- `mRemoteNG/Connection/` — Connection data model and protocol implementations
-- `mRemoteNG/Config/` — Serializers, settings, and data providers
-- `mRemoteNG/Security/` — Encryption, key derivation, credential handling
-- `mRemoteNG/UI/` — WinForms controls, windows, menus, and theme support
-- `mRemoteNG/Tree/` — Connection tree model and operations
-- `ExternalConnectors/` — Vault integrations (1Password, SecretServer, Passwordstate)
+Докладно — у [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Основні папки:
 
-## Code Style
+| Папка | Що там |
+|---|---|
+| `mRemoteNG/Connection/` | модель підключень і протоколи |
+| `mRemoteNG/Config/` | збереження й завантаження підключень і налаштувань |
+| `mRemoteNG/Security/` | шифрування, виведення ключа, пароль програми (`AppPasswordPolicy.cs`) |
+| `mRemoteNG/UI/` | вікна, меню, панелі, теми |
+| `mRemoteNG/Tree/` | дерево підключень |
+| `ExternalConnectors/` | інтеграції зі сховищами паролів |
+| `mRemoteNGInstaller/` | інсталятор MSI (WiX) |
 
-- Follow existing patterns in the codebase
-- Use `[SupportedOSPlatform("windows")]` on all new public classes
-- Prefer `new()` target-typed construction where the type is obvious
-- Use file-scoped namespaces only in new files if the surrounding code uses them
-- No unnecessary `using` statements
+## Повідомлення про помилки
 
-## Reporting Issues
+Пишіть у [Issues на GitHub](https://github.com/mishka1c/mRemoteNX/issues) або
+[на Gitea](https://gitea.mykino.uk/mishka1c/mRemoteNX/issues). Вкажіть версію mRemoteNX і Windows,
+кроки для відтворення і, якщо можна, додайте архів з **Help → Generate Debug Bundle**.
 
-- Use [GitHub Issues](https://github.com/mRemoteNG/mRemoteNG/issues) to report bugs
-- Include your mRemoteNG version, OS version, and steps to reproduce
-- Attach the error log from `%AppData%\mRemoteNG\` if applicable
-
-## Star the project
-
-If this project helps you, please [star the repository](https://github.com/robertpopa22/mRemoteNG).
-
-Some of the community tools we use set a public-star minimum before they will work with a project. [Qodo's free plan for open source](https://docs.qodo.ai/open-source-program) requires at least 200 stars on this repository, or on another public repository in the same GitHub organization. Other tools we use ask for more than that. A star is what keeps those tools available here.
+Про вразливості повідомляйте приватно — див. [SECURITY.md](SECURITY.md).

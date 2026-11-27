@@ -27,9 +27,8 @@ namespace mRemoteNG.UI.Forms
             ApplyTheme();
         }
 
-        // The live figures below are rewritten mechanically by scripts/sync-readme-metrics.py
-        // (the same pass that keeps README.md honest) - do not hand-edit the numbers.
-        private const string LiveStats = "4,183 automated checks · analyzer checks enabled · 115 external reports closed";
+        // One-line summary of what mRemoteNX adds, shown under the version.
+        private const string LiveStats = "Application password · encrypted connections file · idle lock";
 
         private void ApplyLanguage()
         {
@@ -40,7 +39,7 @@ namespace mRemoteNG.UI.Forms
             llCredits.Text = Language.OriginalCredits;
             llLicense.Text = Language.License;
             lblCopyright.Text = GeneralAppInfo.Copyright;
-            lblTitle.Text = "mRemoteNG Community Edition";
+            lblTitle.Text = "mRemoteNX";
             var puttyVersion = PuttyTypeDetector.GetPuttyVersion(GeneralAppInfo.PuttyPath);
             var puttyVersionStr = (puttyVersion.Major > 0 || puttyVersion.Minor > 0)
                 ? $" | PuTTY {puttyVersion.Major}.{puttyVersion.Minor}"
@@ -48,24 +47,23 @@ namespace mRemoteNG.UI.Forms
             lblVersion.Text = $@"Version {GeneralAppInfo.ApplicationVersion} [build {GeneralAppInfo.BuildId}]{puttyVersionStr} — .NET 10, 16 protocols{PortableSuffix()}";
             lblStats.Text = LiveStats;
             lblStory.Text =
-                "This fork is maintained by an AI-assisted pipeline at Geseidl IT Solutions: every " +
-                "report is investigated, fixed, built and tested automatically, with human review on " +
-                "anything security-sensitive. It stands - with respect and gratitude - on almost two " +
-                "decades of work by the mRemoteNG project: Felix Deimel, Riley McArdle, and the " +
-                "mRemoteNG Dev Team. Their links live on the right.";
+                "mRemoteNX is a password-protected fork of mRemoteNG: one application password " +
+                "unlocks the program and encrypts the whole connections file. It stands - with " +
+                "respect and gratitude - on almost two decades of work by the mRemoteNG project: " +
+                "Felix Deimel, Riley McArdle, the mRemoteNG Dev Team and the mRemoteNG Community " +
+                "Edition maintainers. Their links live on the right.";
             lblForkHeader.Text = $@"{Language.ForkHeader} ({GeneralAppInfo.ForkOwner})";
             llForkGitHub.Text = Language.ForkGitHubPage;
             llForkReleases.Text = Language.ForkReleases;
             llForkChangelog.Text = Language.ForkChangelog;
-            llDonate.Text = "Support the Geseidl Association";
-            lblStarAsk.Text =
-                "Please star this repository. Qodo's free open-source plan needs at least 200 stars. " +
-                "Other tools we use ask for more.";
-            llStar.Text = "Star on GitHub";
+            // mRemoteNX takes no donations and asks for no stars.
+            llDonate.Visible = false;
+            lblStarAsk.Visible = false;
+            llStar.Visible = false;
             lblOriginalHeader.Text = "The Original Project — thank you";
             lblMaintainedBy.Text = Language.MaintainedBy;
-            lblMaintainer.Text = "Geseidl IT Solutions";
-            llMaintainerWebsite.Text = "geseidl.ro/en/servicii-it";
+            lblMaintainer.Text = GeneralAppInfo.ForkOwner;
+            llMaintainerWebsite.Text = "gitea.mykino.uk/mishka1c/mRemoteNX";
         }
 
         private static string PortableSuffix() =>
@@ -127,7 +125,7 @@ namespace mRemoteNG.UI.Forms
 
         private void llMaintainerWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl("https://geseidl.ro/en/servicii-it");
+            OpenUrl(GeneralAppInfo.UrlMainRepository);
         }
 
         private void llDonate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

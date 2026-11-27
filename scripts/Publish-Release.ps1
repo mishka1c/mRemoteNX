@@ -42,7 +42,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$Repo = 'robertpopa22/mRemoteNG'
+$Repo = 'mishka1c/mRemoteNX'
 $MinClientVersion = '1.84.0'
 $ExcludedTopLevel = @('Settings', '_rollback', '_deploy-state', '_staging')
 # Files that force a FULL package (plan B). Matched case-insensitively on leaf name and on relative path.

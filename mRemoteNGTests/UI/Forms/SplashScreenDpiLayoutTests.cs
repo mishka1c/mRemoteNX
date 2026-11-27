@@ -28,9 +28,9 @@ namespace mRemoteNGTests.UI.Forms
             using Font versionFont = new("Segoe UI", 16f);
             using Font subtitleFont = new("Segoe UI", 14f, FontStyle.Bold);
             using Font taglineFont = new("Segoe UI", 11f, FontStyle.Italic);
-            SizeF version = Measure($"v. {GeneralAppInfo.ApplicationVersion} — Community Edition", versionFont, dpi);
+            SizeF version = Measure($"v. {GeneralAppInfo.ApplicationVersion}", versionFont, dpi);
             SizeF subtitle = Measure("Multi-Remote Next Generation Connection Manager", subtitleFont, dpi);
-            SizeF tagline = Measure("AI-assisted open source · 16 protocols · .NET 10", taglineFont, dpi);
+            SizeF tagline = Measure("Password-protected · 16 protocols · .NET 10", taglineFont, dpi);
 
             Size canvas = FrmSplashScreenNew.CanvasSize(dpi);
             var tops = FrmSplashScreenNew.LineTops(dpi);

@@ -226,7 +226,7 @@ jobs:
           $fullVersion = "${{ steps.version_info.outputs.version }}"
           $date = Get-Date -Format "yyyyMMdd"
           $suffix = "${{ matrix.suffix }}"
-          $zipName = "mRemoteNG-v$fullVersion-${{ matrix.arch }}$suffix.zip"
+          $zipName = "mRemoteNX-v$fullVersion-${{ matrix.arch }}$suffix.zip"
           echo "zipname=$zipName" >> $env:GITHUB_OUTPUT
           echo "version=$fullVersion" >> $env:GITHUB_OUTPUT
           echo "build=$build" >> $env:GITHUB_OUTPUT
@@ -380,7 +380,7 @@ jobs:
       # (SIGNPATH_CONFIGURED, job env). When they do, signing is mandatory: no
       # continue-on-error, and the release job below refuses to publish an unsigned
       # ZIP next to a signed one. Until they exist, both steps are skipped and the
-      # release ships unsigned, as it always has (docs/CODE_SIGNING_POLICY.md).
+      # release ships unsigned.
       #
       # The SignPath project must define two artifact configurations, "zip" (signs
       # mRemoteNG.exe and every *.dll inside the archive, Assemblies/ included) and
@@ -584,7 +584,7 @@ jobs:
           # pick it up (#138).
           $msi = Get-ChildItem -Path release-assets -Recurse -Filter *.msi | Select-Object -First 1
           if ($msi) {
-            $target = "release-assets/mRemoteNG-v${{ steps.meta.outputs.version }}-x64.msi"
+            $target = "release-assets/mRemoteNX-v${{ steps.meta.outputs.version }}-x64.msi"
             Move-Item -Path $msi.FullName -Destination $target
             # Prune only directories left empty by the move — never touch nested
             # structures another artifact may legitimately ship.
@@ -629,7 +629,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          name: "mRemoteNG ${{ steps.meta.outputs.version }}"
+          name: "mRemoteNX ${{ steps.meta.outputs.version }}"
           # Step (05) flattens the MSI to the release root, so release-assets/* covers
           # everything; the recursive MSI glob stays as a safety net in case the MSI
           # artifact layout changes and staging misses it (#138).
@@ -637,34 +637,38 @@ jobs:
             release-assets/*
             release-assets/**/*.msi
           body: |
-            ## mRemoteNG ${{ steps.meta.outputs.version }}
+            ## mRemoteNX ${{ steps.meta.outputs.version }}
 
-            ### Available Downloads
+            ### Що завантажувати
 
-            **Framework-Dependent** - Requires .NET 10 Runtime installed:
-            - Smaller download size (~15-25 MB)
-            - Requires .NET 10 Desktop Runtime on user machine
+            **Звичайна збірка** (без `selfcontained` у назві) — потрібен встановлений
+            [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0), файл менший (~15–25 МБ).
 
-            **Self-Contained** - Portable, no installation required:
-            - Larger download size (~80-150 MB)
-            - Includes .NET 10 runtime - no installation needed
+            **selfcontained** — .NET уже всередині, нічого встановлювати не треба, файл більший (~80–150 МБ).
 
-            Both versions are available for **x64**, **x86**, and **ARM64** architectures.
+            **MSI** — інсталятор: ставить програму в `Program Files` і створює ярлики.
+
+            Збірки є для **x64**, **x86** і **ARM64**.
 
             > [!IMPORTANT]
-            > **Extract ZIPs into a fresh/empty folder** — do not unpack a framework-dependent build over a folder that previously held a self-contained one (or vice versa). Stale .NET runtime files from the old layout make the app fail to start with a native "You must install .NET" dialog (#130).
+            > **Розпаковуйте zip у нову порожню папку.** Якщо розпакувати поверх іншого варіанту збірки, програма може не запуститися з повідомленням «You must install .NET».
+
+            > [!WARNING]
+            > Пароль програми неможливо відновити. Перед першим запуском зробіть копію свого `confCons.xml`.
+
+            Як користуватися: [посібник користувача](https://github.com/${{ github.repository }}/blob/main/docs/USER-GUIDE.md).
 
             ---
 
-            ### Changes in this Release
+            ### Зміни в цій версії
             ${{ steps.changelog.outputs.log }}
 
-            ### SHA256 Checksums
+            ### Контрольні суми SHA256
             ```
             ${{ steps.checksums.outputs.sha256 }}
             ```
 
-            Last Commit Message:
+            Останній коміт:
             ${{ steps.meta.outputs.message }}
           draft: false
           prerelease: false

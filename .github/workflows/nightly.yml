@@ -181,7 +181,7 @@ jobs:
 
           $date = Get-Date -Format "yyyyMMdd"
           $sha = "${{ github.sha }}".Substring(0, 7)
-          $zipName = "mRemoteNG-nightly-$date-v$version-$sha-x64.zip"
+          $zipName = "mRemoteNX-nightly-$date-v$version-$sha-x64.zip"
 
           # Create ZIP (framework-dependent, x64)
           $sourceDir = "mRemoteNG\bin\x64\Release"
@@ -242,7 +242,7 @@ jobs:
           $msi = Get-ChildItem -Path "mRemoteNGInstaller\bin" -Recurse -Filter "*.msi" -ErrorAction SilentlyContinue | Select-Object -First 1
           $msiName = ""
           if ($msi) {
-            $msiName = "mRemoteNG-nightly-$date-v$version-$sha-x64.msi"
+            $msiName = "mRemoteNX-nightly-$date-v$version-$sha-x64.msi"
             Copy-Item $msi.FullName -Destination $msiName
             Write-Host "MSI: $msiName ($('{0:N1} MB' -f ((Get-Item $msiName).Length / 1MB)))"
           } else {
@@ -381,35 +381,27 @@ jobs:
           # Pin the recreated tag to the commit that was built, not to whatever main points at
           # by the time this job runs.
           target_commitish: ${{ github.sha }}
-          name: "Nightly Build — ${{ needs.nightly.outputs.date }} (v${{ needs.nightly.outputs.version }})"
+          name: "Тестова збірка — ${{ needs.nightly.outputs.date }} (v${{ needs.nightly.outputs.version }})"
           files: release-assets/*
           body: |
-            ## Nightly Build
+            ## Тестова збірка mRemoteNX
 
-            **Version:** v${{ needs.nightly.outputs.version }}
-            **Date:** ${{ needs.nightly.outputs.date }}
-            **Commit:** [${{ needs.nightly.outputs.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-            **Architecture:** x64 (framework-dependent)
-            **Tests:** All passed
+            **Версія:** v${{ needs.nightly.outputs.version }}
+            **Дата:** ${{ needs.nightly.outputs.date }}
+            **Коміт:** [${{ needs.nightly.outputs.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            **Архітектура:** x64 (потрібен .NET 10 Desktop Runtime)
+            **Автоматичні тести:** пройдено
 
-            ### Downloads
-
-            | Format | Description |
-            |--------|-------------|
-            | **ZIP** | Portable — extract and run |
-            | **MSI** | Windows Installer — installs to Program Files with shortcuts |
+            | Файл | Що це |
+            |------|-------|
+            | **ZIP** | Портативна версія — розпакуйте і запустіть |
+            | **MSI** | Інсталятор — ставить у Program Files і створює ярлики |
 
             > [!WARNING]
-            > This is an automated build from the `main` branch. It includes the latest changes but may not be fully tested in production scenarios. For the stable release, use the [latest release](https://github.com/${{ github.repository }}/releases/latest).
+            > Це тестова збірка з гілки `main`, запущена вручну. Для щоденного використання беріть [останній реліз](https://github.com/${{ github.repository }}/releases/latest).
 
-            > [!NOTE]
-            > Fixes in this build were developed and verified by our automated pipeline — the full automated test suite passes, but no test harness can reproduce *your* environment. If a nightly contains a fix for an issue you reported, **your test is the real verification**, and reporting back (either way) is the most valuable contribution you can make. How this fork is maintained: [#167](https://github.com/${{ github.repository }}/issues/167).
+            Потрібен [.NET Desktop Runtime 10.0](https://dotnet.microsoft.com/download/dotnet/10.0). Розпаковуйте zip у нову порожню папку.
 
-            The framework-dependent build requires [.NET Desktop Runtime 10.0](https://dotnet.microsoft.com/download/dotnet/10.0).
-
-            > [!IMPORTANT]
-            > **Extract the ZIP into a fresh/empty folder.** Overwriting a folder that previously held a *self-contained* build leaves stale .NET runtime files (`hostfxr.dll`, `coreclr.dll`, …) behind, and the app will fail to start with a native "You must install .NET" dialog even when the runtime is installed (#130).
-
-            This release is automatically replaced on every push to `main`.
+            Ця збірка замінюється при кожному новому запуску.
           draft: false
           prerelease: true

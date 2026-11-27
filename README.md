@@ -4,55 +4,51 @@
 
 # mRemoteNX
 
-mRemoteNX is a password-protected fork of [mRemoteNG](https://github.com/mRemoteNG/mRemoteNG), the open-source
-multi-protocol remote connections manager (RDP, VNC, SSH, Telnet, HTTP/HTTPS, rlogin, raw sockets, PowerShell and more).
-It is based on the [mRemoteNG Community Edition](https://github.com/robertpopa22/mRemoteNG) and runs as a separate
-application, side by side with any installed mRemoteNG.
+mRemoteNX — менеджер віддалених підключень для Windows: RDP, VNC, SSH, Telnet, HTTP/HTTPS, rlogin,
+PowerShell та інші протоколи в одному вікні з вкладками. Це форк відкритого проєкту
+[mRemoteNG](https://github.com/mRemoteNG/mRemoteNG), у якому **програма і всі підключення захищені
+паролем**.
 
-- Main repository: <https://gitea.mykino.uk/mishka1c/mRemoteNX>
-- GitHub mirror and builds: <https://github.com/mishka1c/mRemoteNX>
+- Основний репозиторій: <https://gitea.mykino.uk/mishka1c/mRemoteNX>
+- Дзеркало на GitHub і збірки: <https://github.com/mishka1c/mRemoteNX>
 
-## What mRemoteNX adds
+## Що додає mRemoteNX
 
-| Feature | Details |
+| Можливість | Як працює |
 |---|---|
-| Application password | One password unlocks the application. It is also the master password of the connections file. |
-| Encrypted connections file | The whole connections file is always encrypted with AES-256-GCM; the key is derived from the password with PBKDF2 (600,000 iterations by default). |
-| First start | If the connections file has no master password yet, mRemoteNX asks you to create one, or exits. |
-| Attempt limit | After 15 wrong passwords in a row the application closes (configurable, 1-100). |
-| Idle lock | After 15 minutes without input the window locks and hides to the tray (configurable, 0 = off). |
-| Separate application | Own settings folders, installer, start-menu entries, registry policy key and single-instance lock; does not touch an installed mRemoteNG. |
-| Updates | The in-app update check uses only this repository's releases. |
+| Пароль програми | Без пароля програма не відкривається. Це водночас майстер-пароль файлу підключень. |
+| Зашифрований файл підключень | Весь файл завжди шифрується AES-256-GCM; ключ виводиться з пароля через PBKDF2 (600 000 ітерацій). |
+| Перший запуск | Якщо пароля ще немає, програма просить його створити, інакше закривається. |
+| Ліміт спроб | Після 15 невірних паролів поспіль програма закривається (налаштовується, 1–100). |
+| Блокування після простою | Через 15 хвилин без дій вікно блокується і ховається в трей (налаштовується, 0 — вимкнено). |
+| Окрема програма | Свої папки налаштувань, інсталятор, ярлики й ключ реєстру; не заважає встановленому mRemoteNG. |
+| Оновлення | Програма перевіряє оновлення лише в релізах цього репозиторію. |
 
-The settings are under **File → Options → Security → Application password (mRemotePass)**.
+Налаштування: **File → Options → Security → Application password (mRemotePass)**.
 
-> The password cannot be recovered. If it is lost, the saved connections cannot be decrypted.
-> Keep a backup of `confCons.xml` before the first start.
+> **Пароль неможливо відновити.** Якщо його втратити, збережені підключення не розшифрувати.
+> Перед першим запуском зробіть копію свого `confCons.xml`.
 
-## Moving connections from mRemoteNG
+## Завантаження
 
-mRemoteNX does not read mRemoteNG's settings. Open a copy of your `confCons.xml` with **File → Open Connection File**
-(or import it). On first start mRemoteNX asks for a password and saves the file fully encrypted.
+Готові збірки — у розділі [Releases](https://github.com/mishka1c/mRemoteNX/releases): портативний zip
+і інсталятор MSI для x64, x86 та ARM64. Потрібен .NET 10 Desktop Runtime.
 
-## Downloads
+Збірки не підписані цифровим сертифікатом, тому при першому запуску Windows SmartScreen може
+показати попередження — натисніть **Докладніше → Усе одно запустити**.
 
-Builds are published under [Releases](https://github.com/mishka1c/mRemoteNX/releases). They are not code-signed,
-so Windows SmartScreen may warn on first start (**More info → Run anyway**).
+## Документація
 
-## Building
+- [Посібник користувача](docs/USER-GUIDE.md) — встановлення, пароль, блокування, перенесення
+  підключень з mRemoteNG, налаштування, усунення проблем.
+- [Історія змін](CHANGELOG.md)
+- [Безпека і повідомлення про вразливості](SECURITY.md)
+- [Як зібрати програму і долучитися до розробки](CONTRIBUTING.md)
 
-The solution needs Visual Studio 2026 (or Build Tools) with MSBuild; `dotnet build` alone cannot build the RDP
-ActiveX (COM) reference.
+## Ліцензія і подяки
 
-```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
-```
+mRemoteNX поширюється під ліцензією [GNU GPL v2](COPYING.txt), як і mRemoteNG.
 
-On GitHub the builds run on demand: **Actions → Nightly Build / PR_Validation → Run workflow**.
-Pushing a tag such as `v1.85.0` runs the release build.
-
-## License and credits
-
-mRemoteNX is licensed under the [GNU General Public License v2](COPYING.txt), like mRemoteNG.
-It is built on the work of the mRemoteNG team and of the mRemoteNG Community Edition maintainers.
-The original project README is kept in [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md).
+Програма побудована на роботі команди mRemoteNG (Felix Deimel, Riley McArdle, mRemoteNG Dev Team)
+та розробників [mRemoteNG Community Edition](https://github.com/robertpopa22/mRemoteNG), від якої
+відгалужено цей форк. Сторонні компоненти перелічено в [docs/CREDITS.md](docs/CREDITS.md).

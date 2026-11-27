@@ -66,13 +66,12 @@ Tree panel (§3) instead for deterministic automation.
 | Quick Import | opens `FrmQuickImport` modally |
 
 ### Help (`HelpMenu.cs`)
-mRemoteNG Help (F1) · Fork Features Guide (opens `docs/USER-GUIDE.md` on GitHub) · Keyboard
+mRemoteNG Help (F1) and mRemoteNX User Guide (both open the Ukrainian `docs/USER-GUIDE.md` on GitHub) · Keyboard
 Shortcuts... (`WindowType.KeyboardShortcuts`) · *sep* · Fork: GitHub Page / Releases & Downloads /
 Report an Issue (external URLs) · *sep* · Original Project Website / Forum / Chat / Community
 (external URLs) · *sep* · Generate Debug Bundle (SaveFileDialog, then a success/error MessageBox —
 not dialog-free) · Check for Updates... (disabled if update-check registry policy is off) · *sep* ·
-**Support the Geseidl Association** (→ `GeneralAppInfo.UrlDonate`; the upstream donate URL 404s) ·
-*sep* · **About...** → shows `frmAbout` docked in `pnlDock` (§4.4).
+(donate item hidden in mRemoteNX) · *sep* · **About...** → shows `frmAbout` docked in `pnlDock` (§4.4).
 
 ## 2. Options Dialog (File → Options...)
 
@@ -334,7 +333,7 @@ Authentication Type/Username/Password, Private Key File(+Browse), Passphrase.
 ### 4.4 About (`frmAbout`)
 Shown docked in `pnlDock` (not modal). Title "Fructus temporum" (tagline), Version/License/
 Copyright labels, links **Credits**/**Changelog**/**License**. "This Fork": **GitHub Page** /
-**Releases** / **Changelog**. "Maintained by": "Geseidl IT Solutions" + **geseidl.ro/en/servicii-it**.
+**Releases** / **Changelog**. "Maintained by": `GeneralAppInfo.ForkOwner` + link to the Gitea repository. Donate and star links are hidden.
 
 ## 5. FlaUI Gotchas
 

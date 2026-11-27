@@ -82,7 +82,7 @@ namespace mRemoteNG.UI.Forms
             lblTitle.Location = new System.Drawing.Point(6, 6);
             lblTitle.Name = "lblTitle";
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "mRemoteNG Community Edition";
+            lblTitle.Text = "mRemoteNX";
             lblTitle.UseCompatibleTextRendering = true;
             //
             // lblVersion
@@ -192,7 +192,7 @@ namespace mRemoteNG.UI.Forms
             llDonate.Name = "llDonate";
             llDonate.TabIndex = 14;
             llDonate.TabStop = true;
-            llDonate.Text = "Support the Geseidl Association";
+            llDonate.Text = "";
             llDonate.LinkClicked += llDonate_LinkClicked;
             //
             // lblStarAsk
@@ -236,7 +236,7 @@ namespace mRemoteNG.UI.Forms
             lblMaintainer.Location = new System.Drawing.Point(110, 392);
             lblMaintainer.Name = "lblMaintainer";
             lblMaintainer.TabIndex = 16;
-            lblMaintainer.Text = "Geseidl IT Solutions";
+            lblMaintainer.Text = "mishka1c";
             //
             // llMaintainerWebsite
             //
@@ -246,7 +246,7 @@ namespace mRemoteNG.UI.Forms
             llMaintainerWebsite.Name = "llMaintainerWebsite";
             llMaintainerWebsite.TabIndex = 17;
             llMaintainerWebsite.TabStop = true;
-            llMaintainerWebsite.Text = "geseidl.ro/en/servicii-it";
+            llMaintainerWebsite.Text = "gitea.mykino.uk/mishka1c/mRemoteNX";
             llMaintainerWebsite.LinkClicked += llMaintainerWebsite_LinkClicked;
             //
             // lblOriginalHeader

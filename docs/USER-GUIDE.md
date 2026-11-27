@@ -1,610 +1,216 @@
-# Fork Features Guide
+# Посібник користувача mRemoteNX
 
-The in-app help (**Help > mRemoteNG Help**, or `F1`) opens the
-[upstream manual](https://mremoteng.readthedocs.io/en/latest/). That manual describes the original
-mRemoteNG and documents **none** of the additions made in this fork. This guide fills that gap: it
-covers only what is different here, and assumes you already know how to use mRemoteNG itself.
+mRemoteNX — менеджер віддалених підключень для Windows (RDP, VNC, SSH, Telnet, HTTP/HTTPS, rlogin,
+PowerShell та інші). Це форк mRemoteNG, у якому програма і файл підключень захищені паролем.
 
-Applies to **v1.83.0** and the current `nightly`. Screenshots were taken from a build of this
-repository.
+Цей посібник відкривається з меню **Help** (пункти **mRemoteNG Help** і **mRemoteNX User Guide**) або клавішею **F1**.
 
-> **How this fork is maintained.** Fixes here are developed and verified by an automated pipeline —
-> automated builds, an automated test suite, and a UI battery driven against the built app. The
-> maintainers also run mRemoteNG daily. What that process *cannot* reproduce is your environment:
-> your network, your servers, your locale. Where this guide states a limitation, it states it
-> plainly rather than glossing over it. See
-> [Crash reports and issue reporting](#9-crash-reports-and-issue-reporting).
+## Зміст
 
----
-
-## Contents
-
-1. [Where your settings live (portable mode)](#1-where-your-settings-live-portable-mode)
-2. [WebAuthn / FIDO2 redirection (RDP)](#2-webauthn--fido2-redirection-rdp)
-3. [Entra ID authentication (RDP)](#3-entra-id-authentication-rdp)
-4. [Vault / OpenBao SSH one-time passwords](#4-vault--openbao-ssh-one-time-passwords)
-5. [Tabs that stay open after a disconnect](#5-tabs-that-stay-open-after-a-disconnect)
-6. [Reconnecting last session's connections at startup](#6-reconnecting-last-sessions-connections-at-startup)
-7. [Storing connections in SQL](#7-storing-connections-in-sql)
-8. [Tools](#8-tools) — [Connection Tester](#81-connection-tester) · [Keyboard Shortcuts](#82-keyboard-shortcuts) · [Generate Debug Bundle](#83-generate-debug-bundle)
-9. [Crash reports and issue reporting](#9-crash-reports-and-issue-reporting)
-10. [Updates — GitHub only](#10-updates--github-only)
-
-The **Help** menu is the entry point for most of this:
-
-![The Help menu](images/help-menu.png)
+1. [Встановлення](#1-встановлення)
+2. [Перший запуск і пароль програми](#2-перший-запуск-і-пароль-програми)
+3. [Блокування і ліміт спроб](#3-блокування-і-ліміт-спроб)
+4. [Налаштування безпеки](#4-налаштування-безпеки)
+5. [Як змінити пароль](#5-як-змінити-пароль)
+6. [Перенесення підключень з mRemoteNG](#6-перенесення-підключень-з-mremoteng)
+7. [Робота з підключеннями](#7-робота-з-підключеннями)
+8. [Де зберігаються налаштування](#8-де-зберігаються-налаштування)
+9. [Резервні копії](#9-резервні-копії)
+10. [Оновлення](#10-оновлення)
+11. [Усунення проблем](#11-усунення-проблем)
 
 ---
 
-## 1. Where your settings live (portable mode)
+## 1. Встановлення
 
-**Every build of this fork is compiled as a portable edition.** That is a compile-time decision (the
-`PORTABLE` constant, defined for every configuration CI actually builds — including the one the MSI
-is packaged from). There is no setting, marker file, or command-line switch that turns it on or off.
+Завантажте збірку з [Releases](https://github.com/mishka1c/mRemoteNX/releases). Є два варіанти:
 
-In practice that means mRemoteNG looks for its configuration in a **`Settings\` folder next to
-`mRemoteNG.exe`** first, and only falls back elsewhere if it cannot write there:
-
-```
-mRemoteNG.exe
-Settings\
-    confCons.xml                  connections
-    mRemoteNG.settings            application settings (named after the exe)
-    pnlLayout.xml                 window/dock layout
-    Layouts\<name>.xml            named layouts (View > Save Layout...)
-    extApps.xml                   external tools
-    cmdSnippets.xml               command snippets
-    Themes.xml, Themes\           themes
-    LocalConnectionProperties.xml per-connection local state (incl. "was connected")
-    quickConnectHistory.xml
-    SqlConnectionsCache.xml
-    confCons.xml.*.backup         rotating backups
-```
-
-### The writability fallback — why an installed copy behaves differently
-
-Before using `Settings\`, the app writes a probe file next to the exe. If that fails, it silently
-uses **`%APPDATA%\mRemoteNG Connection Manager\`** instead.
-
-This is exactly what happens with the **MSI installation**: the program lands in `C:\Program Files`,
-which a normal user cannot write to, so the profile goes to `%APPDATA%` and behaves like a
-conventional installed application. Unpack the ZIP into a folder you own — a USB stick, `D:\Apps\`,
-your user profile — and the same binaries keep everything in `Settings\`.
-
-So if your settings appear to "reset" after moving the app, the first thing to check is whether the
-new location is writable.
-
-### Automatic migration into `Settings\`
-
-Older portable layouts kept these files loose in the exe folder. On first run they are *moved* into
-`Settings\`, one at a time, and **only when a file of that name does not already exist there** —
-existing `Settings\` content always wins. Backups (`confCons.xml.*.backup`) and the `Themes` folder
-move too. The migration is best-effort: if it fails, the app starts anyway.
-
-### The "Configuration directory" option does not apply
-
-**File > Options > Config** has a *Configuration directory* box. It is disabled in the portable
-edition — which is every build — and the page says so:
-
-> Portable edition always uses the application folder and does not support a custom configuration
-> directory.
-
-The *External apps file* box on the same page **does** work in both editions.
-
-### Two practical notes
-
-- **Upgrading:** copy your `Settings\` folder into the new version's folder before first launch.
-  Nothing else carries state. To reset to factory defaults, close the app and delete `Settings\`.
-- **The log file is not in `Settings\`.** In portable mode it sits directly beside the exe as
-  `mRemoteNG Connection Manager.log` (and in `%LOCALAPPDATA%\mRemoteNG Connection Manager\` when the
-  exe folder is read-only).
-
----
-
-## 2. WebAuthn / FIDO2 redirection (RDP)
-
-Forwards WebAuthn/FIDO2 passkey prompts from the remote session to a security key or platform
-authenticator attached to *your* machine — so a passkey sign-in inside an RDP session can be
-completed with the YubiKey in your laptop, or with Windows Hello on your side.
-
-**Where:** select an RDP connection, then in the **Config** panel open the **Redirect** category.
-
-| Property | Value | Default |
+| Варіант | Що робити | Де зберігаються налаштування |
 |---|---|---|
-| **WebAuthn (FIDO2)** | Yes / No | **No** |
+| **Портативна (zip)** | Розпакуйте в папку, куди у вас є право запису (наприклад `D:\Apps\mRemoteNX`), і запустіть `mRemoteNG.exe` | Папка `Settings` поруч із програмою |
+| **Інсталятор (MSI)** | Запустіть MSI від імені адміністратора | `%APPDATA%\mRemoteNX Connection Manager` |
 
-The description pane reads: *"Select whether WebAuthn / FIDO2 passkey requests on the remote machine
-should be forwarded to authenticators attached to this computer."*
+Потрібен **.NET 10 Desktop Runtime** (x64, x86 або ARM64, як і сама збірка). Якщо його немає,
+Windows покаже повідомлення з посиланням на завантаження.
 
-**How to enable it**
+mRemoteNX — окрема програма. Вона ставиться поруч із mRemoteNG, не замінює його і не чіпає його
+налаштувань. Обидві програми можна запускати одночасно.
 
-1. Select the connection in the connection tree.
-2. In **Config**, scroll to **Redirect** (the property grid is grouped by category).
-3. Set **WebAuthn (FIDO2)** to **Yes**.
-4. Reconnect — redirection is applied when the session is established, not to a live session.
+> Файл програми називається `mRemoteNG.exe` — так залишено для сумісності зі скриптами збірки.
 
-To make it the default for new connections, set the same property on the default connection (the
-**Default Properties** button in the Config panel toolbar). To let a folder drive it, set
-**Inherit WebAuthn (FIDO2)** on the child connection.
+## 2. Перший запуск і пароль програми
 
-**Requirements and caveats**
+Один пароль захищає і програму, і всі збережені підключення:
 
-- **RDP only.** The property is hidden for every other protocol.
-- **Client-side minimum: Windows 10 20H1.** The setting is pushed through the RDP ActiveX control's
-  extended-settings interface, which older clients do not expose.
-- **Failure is silent by design.** If the installed RDP client does not know the property, the app
-  swallows the error and connects without redirection. There is no Notifications entry for that
-  case, so on an old client the setting simply appears to do nothing.
-- The remote host must also support WebAuthn redirection; a host that predates the feature ignores
-  it.
+- без пароля програма не відкривається;
+- від пароля виводиться ключ (PBKDF2, 600 000 ітерацій), яким **весь** файл підключень шифрується
+  алгоритмом AES-256-GCM. Без пароля файл неможливо прочитати.
 
-**Persistence:** stored in `confCons.xml`, in SQL (`RedirectWebAuthn` / `InheritRedirectWebAuthn`,
-schema 3.4 and later), and in CSV export. It is written to exported `.rdp` files as
-`redirectwebauthn:i:1` — but the `.rdp` **importer does not read that line back**, so a round-trip
-through `.rdp` loses the setting.
+**Перший запуск.** Якщо у файлу підключень ще немає пароля, програма покаже пояснення і попросить
+створити пароль. Вимоги:
 
----
+- щонайменше 8 символів;
+- великі й малі літери;
+- хоча б одна цифра.
 
-## 3. Entra ID authentication (RDP)
+Пароль вводиться двічі. Якщо натиснути **Cancel**, програма закриється.
 
-Signs in to the remote machine with Microsoft Entra ID (formerly Azure AD) instead of classic Windows
-credentials — for targets that are Entra-joined and expect a token rather than a domain password.
+**Наступні запуски.** Програма одразу просить пароль. Якщо натиснути **Cancel**, вона закриється.
 
-**Where:** select an RDP connection, then in the **Config** panel open the **Connection** category —
-*not* Redirect.
+> **Пароль неможливо відновити.** Якщо ви його забудете, збережені підключення не розшифрувати —
+> ні вам, ні комусь іншому. Запишіть пароль у надійне місце (наприклад, менеджер паролів).
 
-| Property | Value | Default |
+## 3. Блокування і ліміт спроб
+
+**Ліміт спроб.** Після 15 невірних паролів поспіль програма закривається. Лічильник рахує спроби
+і при запуску, і при розблокуванні. Після правильного пароля він обнуляється.
+
+**Блокування після простою.** Якщо 15 хвилин не торкатися миші й клавіатури, вікно mRemoteNX
+блокується: воно ховається в область сповіщень (трей) біля годинника, щоб його вміст не лишався на
+екрані. Відкриті підключення при цьому **не розриваються**.
+
+Щоб розблокувати, двічі клацніть значок mRemoteNX у треї (або розгорніть вікно) і введіть пароль.
+
+**Блокування при згортанні.** Додатково можна блокувати вікно щоразу, коли воно згортається: виділіть
+кореневий вузол **Connections** у дереві підключень і на панелі **Config** встановіть
+**Auto lock on minimize** = **Yes**.
+
+## 4. Налаштування безпеки
+
+**File → Options → Security**, група **Application password (mRemotePass)**:
+
+| Параметр | Що робить | За замовчуванням |
 |---|---|---|
-| **Entra ID Authentication** | Yes / No | **No** |
+| Require the application password at startup | Вмикає пароль програми і повне шифрування файлу підключень | Увімкнено |
+| Close the application after this many wrong passwords | Ліміт невірних спроб (1–100) | 15 |
+| Lock the window after this many idle minutes | Хвилини простою до блокування (0 — не блокувати) | 15 |
 
-The description pane reads: *"Use Microsoft Entra ID (Azure AD) authentication when signing in to the
-remote machine. Requires a compatible RDP client and a server enrolled with Entra ID."*
+Поки пароль програми увімкнено, галочка **Encrypt complete connection file** завжди ввімкнена і
+недоступна для зміни, а захист паролем на вузлі **Connections** вимкнути не можна.
 
-**How to enable it**
+На тій самій сторінці є параметри шифрування: алгоритм (AES), режим (GCM) і кількість ітерацій
+PBKDF2. Більше ітерацій — повільніший підбір пароля, але й повільніше відкриття файлу. Кнопка
+**Test Settings** показує, скільки часу займає збереження з вибраними параметрами.
 
-1. Select the connection.
-2. In **Config > Connection**, set **Entra ID Authentication** to **Yes**.
-3. Leave **Password** empty if you want the Entra sign-in dialog to appear; put the account you
-   expect to be offered in **Username**.
-4. Reconnect.
+## 5. Як змінити пароль
 
-**Requirements and caveats**
+Пароль змінюється через властивість **Password protect** кореневого вузла **Connections**. Поки
+пароль програми обов'язковий, цю властивість вимкнути не можна, тому:
 
-- **RDP only**, and **client-side minimum Windows 10 22H2 / Windows 11**.
-- As with WebAuthn, an older RDP client silently ignores the property.
-- The remote machine must actually be enrolled with Entra ID. This setting does not join it, and it
-  is unrelated to RD Gateway configuration.
-- **`AzureAD\` usernames are handled for you.** If you type `AzureAD\someone@contoso.com` and leave
-  **Domain** empty, the `AzureAD` prefix is moved into the domain field instead of being passed
-  through as part of the user name.
+1. **File → Options → Security**: зніміть **Require the application password at startup** → **OK**.
+2. Виділіть вузол **Connections**, на панелі **Config** встановіть **Password protect** = **No**
+   і введіть поточний пароль.
+3. Встановіть **Password protect** = **Yes** і двічі введіть новий пароль.
+4. Знову ввімкніть **Require the application password at startup** → **OK**.
+5. Збережіть підключення: **File → Save Connection File** (Ctrl+S).
 
-**Persistence:** `confCons.xml`, SQL (`EnableRdsAadAuth` / `InheritEnableRdsAadAuth`, schema 3.4+),
-CSV, and `.rdp` export (`enablerdsaadauth:i:1`, again not re-imported).
+## 6. Перенесення підключень з mRemoteNG
 
----
+mRemoteNX не бере налаштувань у mRemoteNG — їх потрібно перенести один раз.
 
-## 4. Vault / OpenBao SSH one-time passwords
+1. Закрийте mRemoteNG і зробіть копію його файлу `confCons.xml`. Зазвичай він лежить у
+   `%APPDATA%\mRemoteNG` або в папці `Settings` портативної версії.
+2. У mRemoteNX: **File → Open Connection File...** (Ctrl+O) і виберіть копію. Інший спосіб — правою кнопкою на дереві
+   **Import → Import from File...**, щоб додати підключення до вже наявних.
+3. Якщо в mRemoteNG був майстер-пароль, програма попросить його. Якщо не було — запропонує
+   створити пароль mRemoteNX.
+4. Після цього файл зберігається повністю зашифрованим.
 
-Fetches a **single-use SSH password** from HashiCorp Vault or [OpenBao](https://openbao.org/) at
-connect time instead of storing a password in the connection. The one-time password is requested for
-one `(role, user, IP)` triple and is dead after use.
+Зовнішні інструменти (External Tools), теми і розкладку вікон за потреби переносять копіюванням
+файлів `extApps.xml`, `Themes\`, `pnlLayout.xml` у папку налаштувань mRemoteNX (див. розділ 8).
 
-> **Read this first: the bundled PuTTY cannot do this.** SSH OTP mode needs a PuTTY build whose
-> file-version **`InternalName` literally contains `PuTTYNG`**, because mRemoteNG has to inject an
-> authenticator plugin through PuTTY's `-auth-plugin` option. The `PuTTYNG.exe` shipped with this
-> fork reports `InternalName = PuTTY` (product version *Release 0.85 mRemoteNG*), so it is detected
-> as plain PuTTY and embedded in **SetParent mode**. In that mode the connection is refused before it
-> starts, and the **Notifications** panel shows:
->
-> ```
-> Cannot connect to VaultOpenbao ssh otp without using puttyng to inject authenticator plugin
-> ```
->
-> To use OTP mode, supply your own PuTTYNG-branded build and point the app at it with
-> **File > Options > Advanced > Use custom PuTTY path**. The other Vault/OpenBao engines (key-value
-> and LDAP) work fine with the bundled binary.
+## 7. Робота з підключеннями
 
-**Setting up a connection**
+- **Нове підключення:** правою кнопкою на дереві → **New Connection**, далі заповніть властивості
+  на панелі **Config**: **Hostname/IP**, **Protocol**, **Username**, **Password**.
+- **Папки й успадкування:** підключення можна групувати в папки. Будь-яку властивість можна
+  успадкувати від папки (розділ **Inheritance** на панелі **Config**).
+- **Підключитися:** подвійне клацання по підключенню або **Enter**.
+- **Швидке підключення:** поле **Quick Connect** на панелі інструментів.
+- **Вкладки після відключення:** за замовчуванням вкладка лишається відкритою з кнопкою
+  **Connect** (налаштовується в **File → Options → Tabs & Panels**).
+- **Відновлення сесій при запуску:** **File → Options → Startup/Exit → Reconnect to previously
+  opened sessions on startup**.
+- **Перевірка доступності вузлів:** **Tools → Connection Tester** — перевіряє TCP-порт кожного
+  підключення в дереві.
+- **Гарячі клавіші:** **Help → Keyboard Shortcuts...**
 
-1. Select an **SSH** connection (SSH1 or SSH2 — OTP mode is not available on RDP).
-2. In **Config > Connection**, set **External Credential Provider** to **Vault or Openbao**. The
-   **Password** row disappears; the password now comes from the vault.
-3. Set **Vault/Openbao Secret Engine** to **SSH engine OTP mode**.
-4. Fill **Mount** with the mount path of your SSH secrets engine, and **Role** with the role
-   configured there.
-5. Fill **Username** with the account on the target host, and **Hostname/IP** as usual.
+Паролі окремих підключень зберігаються зашифрованими разом з усім файлом. Скопіювати пароль
+підключення в буфер обміну можна лише після повторного введення пароля програми.
 
-The available engines are **KeyValue (Username as Key)**, **LDAP dynamic role**, **LDAP static
-role**, and **SSH engine OTP mode**. The Username row is hidden for the two LDAP engines.
+## 8. Де зберігаються налаштування
 
-**Signing in to the vault**
-
-On the first vault-backed connection of the session, a dialog titled **Vault/Openbao API Login Data**
-asks for:
-
-- **Server URL** — remembered per user (registry, `HKCU\SOFTWARE\mRemoteVaultOpenbao`, value `URL`)
-- **Access Token** — masked, kept in memory for the lifetime of the process only, never written to
-  disk
-
-If the URL does not answer you get a **Test connection failed** box and the connection is abandoned.
-Cancelling the dialog reports `No credential provided`.
-
-**What happens on connect**
-
-The mount is verified to be an `ssh` backend; the hostname is resolved to an IPv4 address (Vault's
-SSH OTP API takes an IP, not a name); the one-time password is requested; and it is handed to PuTTY
-over a named pipe whose ACL grants access to your Windows account only. The helper executable
-`vault-ssh-helper-plugin.exe` must sit next to `mRemoteNG.exe` — **it is not shipped with the
-fork**, you provide it — and it has 10 seconds to complete the handshake.
-
-**Messages you may see**
-
-| Message | Cause |
+| Файл | Що в ньому |
 |---|---|
-| `Cannot connect to VaultOpenbao ssh otp without using puttyng to inject authenticator plugin` | The resolved PuTTY is not a PuTTYNG-branded build — see the box above |
-| `Backend of type ssh does not match expected type N` | **Mount** points at a non-SSH engine |
-| `Could not resolve address '<host>'` / `Failed to resolve address '<host>'` | The hostname has no IPv4 address |
-| `Backend of type 3 is not supported` | SSH OTP mode selected on a connection that is not SSH (for example RDP) |
-| `Invalid ping…` / `Invalid data request…` / `Mismatched data request from VaultOpenbao SSH OTP plugin` | The helper executable is missing, is the wrong one, or answered with data that does not match the connection |
-| `Secret Server Interface Error: …` | Generic vault failure. The wording says "Secret Server" for Vault/OpenBao errors too — a known cosmetic bug, not a sign you picked the wrong provider |
+| `confCons.xml` | підключення (повністю зашифровані) |
+| `mRemoteNG.settings` | налаштування програми |
+| `pnlLayout.xml` | розкладка вікон і панелей |
+| `extApps.xml` | зовнішні інструменти |
+| `Themes\` | теми оформлення |
+| `confCons.xml.*.backup` | автоматичні резервні копії |
 
-**Persistence caveat.** **Mount**, **Role** and **Secret Engine** are stored **only in the XML
-connections file**. They are not part of the SQL schema and not part of CSV export/import, so they do
-**not** survive a SQL-backed configuration or a CSV round-trip. **External Credential Provider**
-itself persists everywhere.
+Папка:
 
----
+- **портативна версія** — `Settings` поруч із `mRemoteNG.exe`. Якщо в папку програми не можна
+  писати (наприклад, вона в `Program Files`), використовується `%APPDATA%\mRemoteNX Connection Manager`;
+- **встановлена через MSI** — `%APPDATA%\mRemoteNX Connection Manager`.
 
-## 5. Tabs that stay open after a disconnect
+Журнал роботи — файл `mRemoteNX Connection Manager.log` поруч із програмою (або в
+`%LOCALAPPDATA%\mRemoteNX Connection Manager`).
 
-**File > Options > Tabs & Panels > "Keep tabs open after disconnecting"** — **on by default.**
+## 9. Резервні копії
 
-This is the behaviour originally requested in issue
-[#61](https://github.com/robertpopa22/mRemoteNG/issues/61) and revisited in
-[#139](https://github.com/robertpopa22/mRemoteNG/issues/139). When a session ends — you log off, the
-server drops you, the SSH process exits — **the tab does not close. It becomes a reconnect
-placeholder.**
+Програма сама робить резервні копії `confCons.xml.*.backup` при збереженні (налаштування —
+**File → Options → Backup**). Копії зашифровані тим самим паролем.
 
-**What you see with it on**
+Рекомендації:
 
-The tab keeps its title, and its content is replaced by a centred panel showing:
+- зробіть копію `confCons.xml` **до** першого запуску mRemoteNX;
+- періодично копіюйте папку налаштувань на інший диск;
+- пам'ятайте: без пароля зашифровані копії марні.
 
-- the connection **name**, in bold
-- `PROTOCOL   hostname:port`, plus the description if the connection has one
-- a **Connect** button
+## 10. Оновлення
 
-**Three ways to reconnect from a placeholder**
+Програма перевіряє оновлення **лише** в релізах репозиторію
+[mishka1c/mRemoteNX](https://github.com/mishka1c/mRemoteNX/releases).
 
-1. Press the **Connect** button.
-2. Select the placeholder tab and press **Enter**.
-3. Right-click the tab and choose **Reconnect**.
+- **Help → Check for Updates...** — перевірити зараз.
+- **File → Options → Updates** — автоматична перевірка при запуску та її період.
 
-All three reuse the same tab rather than opening a second one.
+Кнопка **Download** відкриває сторінку релізу в браузері; програма нічого не завантажує і не
+встановлює сама. Для портативної версії: розпакуйте нову версію і скопіюйте в неї папку `Settings`.
 
-**Other things worth knowing**
+Тестові збірки (реліз **nightly**) перевірка оновлень не пропонує — їх можна взяти вручну на сторінці
+Releases.
 
-- **Placeholder tabs do not count as open connections.** Closing the application will not warn about
-  them, and they are not treated as live sessions elsewhere in the UI.
-- **Closing a live tab takes two clicks.** Pressing the tab's **X** on a connected session closes the
-  *protocol* and leaves the placeholder behind; press **X** again to close the tab itself. This is
-  deliberate — it is the same code path as a server-side disconnect.
-- Shutting the application down, or closing a whole panel, closes everything without leaving
-  placeholders.
-- If the tab's connection can no longer be identified, the placeholder shows *"Connection Event
-  Closed"* with no Connect button.
+## 11. Усунення проблем
 
-**With the option off**, a finished session closes its tab immediately — the 1.77.3 behaviour. If it
-was the panel's last tab, the panel closes too, subject to **Auto close panel after last tab
-closes** on the same options page.
+**«Windows захистила ваш ПК» (SmartScreen) або попередження антивірусу.** Збірки не підписані
+цифровим сертифікатом, тому Windows може їх не знати. Натисніть **Докладніше → Усе одно запустити**.
+Програма використовує звичайні функції Windows (керування клавіатурою, шифрування DPAPI, COM), на які
+антивіруси інколи реагують помилково. Контрольні суми SHA-256 публікуються разом із кожним релізом.
 
-**Related, and often confused with it:** **File > Options > Advanced** has *"Display reconnection
-dialog when disconnected from server (RDP & ICA only)"* and, enabled by it, *"Automatically try to
-reconnect when disconnected from server (RDP & ICA only)"*. Those drive RDP's own reconnect attempt.
-"Keep tabs open" only decides whether the tab survives afterwards.
+**Програма закрилася після кількох невірних паролів.** Це спрацював ліміт спроб. Запустіть програму
+знову — лічильник починається з нуля.
 
----
+**Забули пароль.** Відновити його неможливо. Якщо є копія `confCons.xml`, зроблена до встановлення
+пароля, відкрийте її (**File → Open Connection File...**) — програма попросить створити новий пароль.
 
-## 6. Reconnecting last session's connections at startup
+**Налаштування «зникли» після перенесення програми.** Портативна версія бере налаштування з папки
+`Settings` поруч із програмою. Перевірте, що ви скопіювали цю папку і що в нову папку можна писати.
 
-**File > Options > Startup/Exit > "Reconnect to previously opened sessions on startup"** — **off by
-default.**
+**RDP: «An internal error has occurred» або чорний екран.** Спробуйте вимкнути **Use CredSSP** у
+властивостях підключення або змінити **Color depth**. Перевірте, що на вашому комп'ютері працює
+звичайне «Підключення до віддаленого робочого стола» (`mstsc`).
 
-Two separate mechanisms restore a previous session, and **both** obey this one checkbox:
+**SSH/Telnet: Connection refused.** Перевірте адресу і порт (**Tools → Connection Tester**), а також
+що на сервері запущена відповідна служба.
 
-- **Connections marked as open** in the connection tree are reopened.
-- **Tabs recorded in the saved dock layout** are reconnected.
+**Зібрати діагностику.** **Help → Generate Debug Bundle** створює zip із журналом, відомостями про
+систему і файлом підключень, у якому паролі замінено на `***REMOVED***`. Перед тим як комусь
+надсилати, перегляньте архів: імена хостів і користувачів у ньому залишаються.
 
-The second one used to run unconditionally. It was gated in
-[#120](https://github.com/robertpopa22/mRemoteNG/issues/120), because restoring a screenful of RDP
-tabs at every launch — regardless of the setting — could hit the RDP control's creation timeout.
-
-**The consequence people notice** (this is
-[#172](https://github.com/robertpopa22/mRemoteNG/issues/172)): with the option **off**, your **panel
-layout is still restored** — panels, docking, splitters — but **no tab reconnects**. The window looks
-right and is empty. If you upgraded from an older build and your sessions stopped coming back, this
-checkbox is what you are looking for.
-
-**If it is on and sessions still do not return**, check **File > Options > Backup**: the "was
-connected" flags are written when the connections file is saved. If saving is set to *Never*, those
-flags go stale and there is nothing to restore.
-
-Administrators can force this setting through Group Policy; when they do, the checkbox is greyed out
-and a policy notice appears at the bottom of the page.
-
-**The other Startup/Exit options** on the same page: allow only a single instance, start
-minimized/full screen, disable refocus, and *Start with Windows* — which is not an application
-setting at all but an entry in the `HKCU\...\Run` registry key, pointing at the current executable.
-Move a portable copy and that entry will point at the old location.
-
----
-
-## 7. Storing connections in SQL
-
-Instead of `confCons.xml`, connections can live in a shared database so several workstations see the
-same tree.
-
-**Supported backends** (**File > Options > SQL Server**, *SQL type*):
-
-| Choice | Notes |
-|---|---|
-| `MSSQL - developed by Microsoft` | SQL Server; also supports Entra ID auth modes |
-| `MySQL - developed by Oracle` | also serves **MariaDB** — there is no separate MariaDB option |
-| `ODBC - Open Database Connectivity` | treated as SQL Server for schema work |
-
-**Setting it up**
-
-1. **File > Options > SQL Server**.
-2. Tick **Use SQL Server to load & save connections**.
-3. Pick the *SQL type*, then fill the hostname and **Database** (default name: `mRemoteNG`).
-4. Choose the auth type. For SQL Server the choices are *Windows Authentication*, *SQL Server
-   Authentication*, and the Entra ID variants (*MFA*, *Password*, *Integrated*, *Service Principal*,
-   *Managed Identity*, *Default*). Username and password fields appear or disappear to match.
-5. Press **Test connection**.
-6. **OK** or **Apply** — the connection tree reloads from the database.
-
-**What Test connection does.** It uses whatever is typed in the boxes, not the saved settings, and
-reports one of: *Connection successful*; a server-not-reachable error; a credentials-rejected error;
-or an unknown-database error. Failures now include the database provider's own message underneath the
-classification, because "server not accessible" alone does not distinguish a wrong instance name from
-a blocked port or a timeout. Passwords are masked out of anything shown.
-
-**Automatic database creation.** If the database does not exist, a **Database Not Found** box offers
-to create it. Accepting runs `CREATE DATABASE` (the name is validated first — letters, digits,
-underscore and hyphen only) and re-tests. It creates the **database only**; the tables are created on
-the first real connect.
-
-**Schema upgrades happen automatically and silently.** The current schema is **version 3.6**, stamped
-in `tblRoot.ConfVersion`. On connect, missing columns are added and the version chain is walked from
-whatever the database has (as far back as 2.2) up to 3.6, in one pass, with no prompt. Recent steps:
-
-| Step | Adds |
-|---|---|
-| 3.3 → **3.4** | `RedirectWebAuthn`, `EnableRdsAadAuth` and their two `Inherit…` columns — the WebAuthn/Entra step |
-| 3.4 → **3.5** | `UseRedirectionServerName` (+ inherit) |
-| 3.5 → **3.6** | `Notes` (+ inherit) |
-
-That last one is worth calling out: **before schema 3.6 the SQL backend had no Notes column at all**,
-so notes typed against a SQL-backed profile were discarded on save without any error. Upgrading fixes
-the schema; notes lost before the upgrade are gone.
-
-If the schema cannot be brought up to date, loading warns (*"The database version … is not compatible
-with this version of …"*) while **saving refuses outright** rather than writing a partial tree.
-
-**Two data-loss guards you may run into**
-
-- If `tblCons` exists but `tblRoot` is missing, the load **aborts with an error** instead of
-  recreating the schema — recreating would drop your connections table. Restore `tblRoot` or rebuild
-  the schema deliberately.
-- If the in-memory tree is empty but the database has rows, the save is **refused**. This is what
-  stops a failed load from truncating a shared database.
-
-**Read only.** The *Read only* checkbox blocks saving, external-tools writes, tree editing, the
-context-menu commands and drag & drop. It is a **client-side flag, not a database permission** — for
-an actual guarantee, restrict the SQL login as well.
-
-**Also on this page:** *Show picker on startup* (choose a database profile at launch), a *Reload
-interval* in seconds, and — behind **Advanced >>** — saved connection profiles (load/save/delete) and
-the schema selector.
-
-**Not stored in SQL:** the Vault/OpenBao **Mount**, **Role** and **Secret Engine** fields
-([section 4](#4-vault--openbao-ssh-one-time-passwords)), and the per-connection "was connected" flag,
-which is kept locally in `LocalConnectionProperties.xml` instead.
-
----
-
-## 8. Tools
-
-### 8.1 Connection Tester
-
-**Tools > Connection Tester** opens a panel that walks the whole connection tree and reports which
-hosts answer.
-
-| Column | Meaning |
-|---|---|
-| **Name** | connection name |
-| **Hostname/IP** | address probed |
-| **Port** | the port actually probed — if the connection's port is 0, the protocol default is used |
-| **Status** | `Pending`, then `Open` or `Closed` |
-
-Press **Start Test** to run; the button becomes **Stop Test** while a run is in progress, and a
-progress bar tracks completion. Column headers sort.
-
-What it does and does not do:
-
-- It is a **plain TCP connect probe**. It does not log in, does not speak the protocol, and does not
-  ping. `Open` means the port accepted a TCP connection — nothing about credentials or service
-  health.
-- **Every connection in the tree is tested**, not the selection. Folders are skipped, and so is any
-  connection with an empty hostname.
-- **The timeout is 3 seconds per connection and is not configurable**, and connections are probed
-  **one at a time**. A tree full of unreachable hosts therefore takes roughly 3 seconds each.
-- A timeout, a DNS failure and a refused connection all show as **`Closed`** — the window does not
-  distinguish them.
-- **There is no export.** Results are view-only: no copy, no CSV, no save.
-
-### 8.2 Keyboard Shortcuts
-
-**Help > Keyboard Shortcuts...** opens a read-only reference card of the application's shortcuts.
-
-![The Keyboard Shortcuts panel](images/keyboard-shortcuts.png)
-
-It is a reference, not an editor: shortcuts cannot be rebound, and nothing here is written back to
-settings. The list is maintained in source rather than derived from the live menus, so treat it as
-documentation that can drift — `Ctrl+F` in particular is listed, but *Find in Session* is currently a
-menu label rather than a bound accelerator, so use **Tools > Find in Session** if the key does
-nothing.
-
-### 8.3 Generate Debug Bundle
-
-**Help > Generate Debug Bundle** collects diagnostics into a single ZIP to attach to a bug report.
-
-1. A **Save As** dialog appears, pre-filled with `mRemoteNG_Debug_YYYYMMDD_HHMMSS.zip`. **You choose
-   where it goes** — there is no fixed output folder.
-2. On success you get a **Debug Bundle** box saying *"Debug bundle created successfully!"*. It does
-   not repeat the path, so note where you saved it.
-
-The archive contains exactly three entries:
-
-| Entry | Contents |
-|---|---|
-| `SystemInfo.txt` | app version, OS version, 32/64-bit, CLR version, current culture, portable-edition flag |
-| `mRemoteNG.log` | the application log, copied **byte-for-byte** |
-| `confCons.xml` | your connections file, with password attributes replaced by `***REMOVED***` |
-
-Nothing else is included — no application settings, no external tools, no themes, no crash dumps. If
-your connections live in a **SQL database**, the database is *not* included: the bundle falls back to
-whatever local `confCons.xml` exists, which may be stale or absent (you then get a
-`confCons.xml.missing.txt` note instead).
-
-> **Check the bundle before you send it.** The redaction is a single pattern that blanks every XML
-> attribute whose name ends in `Password` — so `Password`, `ContainerPassword`, `RDGatewayPassword`
-> and `VNCProxyPassword` are removed (they are stored encrypted anyway). **Everything else is left
-> intact**, and two things there matter:
->
-> - **`RDGatewayAccessToken` is stored in plain text and is *not* redacted.** If you use RD Gateway
->   access tokens, a usable secret ships in the bundle.
-> - **The log is copied with no scrubbing at all**, and routinely contains hostnames, user names and
->   connection names.
->
-> Hostnames, user names, domains, ports, descriptions, user fields and pre/post-connection commands
-> are preserved throughout. Open the ZIP and review it before attaching it to a public issue.
-
----
-
-## 9. Crash reports and issue reporting
-
-When an unhandled exception occurs, mRemoteNG shows an **mRemoteNG Unhandled Exception** window with
-the exception message, the stack trace, and a short environment block (OS version, application
-version, Portable or MSI, and the command line). If the exception is fatal the window says so and its
-close button exits the application.
-
-**Nothing is sent anywhere unless you press *Submit Error*.** There is no background uploader. You
-can read the entire report first — **Copy All** puts exactly what would be submitted on the
-clipboard.
-
-**What gets submitted, if you choose to submit**
-
-- the exception type and its message
-- the stack trace (trimmed to 4000 characters)
-- OS version, application version, Portable/MSI, and the command-line arguments
-- a note that the report is auto-generated, and a pointer to the pinned issue
-  [#167](https://github.com/robertpopa22/mRemoteNG/issues/167)
-
-Your connections file, settings, log file and credentials are **not** attached.
-
-> **One caution.** The exception message and the command line are passed through **unmodified**. If
-> you launch mRemoteNG with a custom connections-file path, that path — and any user or share name in
-> it — appears in the report, and a file-access error message can contain a full path. Read the
-> dialog before pressing Submit; what it shows is exactly what is sent.
-
-**Where the report goes.** Official builds post directly to this fork's issue tracker through the
-GitHub API, labelled `bug`, `crash-report`, `auto-submitted`, and you get the issue URL in a message
-box. Because the API token belongs to the maintainer, **the issue is filed under the maintainer's
-account and you are anonymous on it** — if you want to be reachable for follow-up questions, add a
-comment to the issue yourself. Builds without that token (local builds, builds from source) instead
-open a **pre-filled issue form in your browser**, which you submit yourself under your own account.
-
-**Opting out.** There is no setting for this. The opt-out is not pressing the button.
-
-**Why this matters more here than in most projects.** Fixes in this fork are produced and verified by
-an automated pipeline: automated tests, a UI battery, adversarial review between independent models.
-That pipeline cannot reproduce your network, your server or your locale. When a fix for your crash
-ships in a nightly, **your retest is the verification** — nothing else in the process can stand in
-for it. Anything you add to the report (what you were doing, a screenshot, a hunch) is real debugging
-help. The full contract is in the pinned issue
-[#167](https://github.com/robertpopa22/mRemoteNG/issues/167).
-
----
-
-## 10. Updates — GitHub only
-
-This fork distributes exclusively through GitHub Releases. The upstream Stable/Preview/Nightly update
-channels — text manifests hosted on `mremoteng.org` — have been removed entirely. **There is no
-channel setting anywhere in the app**, and nothing to choose between.
-
-**Two live releases**
-
-| Release | Tag | Made when | Offered by the in-app check? |
-|---|---|---|---|
-| **Stable** | `vX.Y.Z` | a version tag is pushed | **Yes** — this is what the updater reports |
-| **Nightly** | `nightly` | every push to `main`; the previous one is deleted and replaced | **No** |
-
-The in-app check queries a single endpoint —
-`https://api.github.com/repos/robertpopa22/mRemoteNG/releases/latest` — and GitHub's *latest*
-excludes prereleases. The nightly is published as a prerelease, so **the updater never offers a
-nightly**. To try one, use **Help > Fork: Releases & Downloads**.
-
-**Checking manually**
-
-**Help > Check for Updates...** opens a panel and starts checking immediately — you do not have to
-press anything the first time. The status line shows one of:
-
-- **No update available** (green) — you are on the latest stable, or newer than it
-- **mRemoteNG available** (orange) — a newer stable exists; the changelog and a **Download** button
-  appear
-- **Check failed!** (orange) — the request did not succeed
-
-**Download opens the GitHub release page in your browser.** It does not fetch, verify or install
-anything: there is no in-app download, no signature check, no auto-install and no restart prompt.
-Upgrading is a manual step you perform yourself — and for a portable install that means downloading,
-unpacking, and copying your `Settings\` folder across
-(see [section 1](#1-where-your-settings-live-portable-mode)).
-
-**Automatic checks**
-
-On first launch you are asked once how this should be handled:
-
-![First-run update prompt](images/first-run-update-prompt.png)
-
-- **Use the recommended settings** — enable the startup check (every 14 days if no interval was set)
-- **Customize the settings now** — opens **File > Options > Updates**
-- **Ask me again later** — the prompt returns on the next launch
-
-Under **File > Options > Updates** you can toggle *Check for updates at startup* and pick **Daily /
-Weekly / Monthly** (choosing *Never* turns the startup check off). Out of the box the interval is 14
-days, which the dropdown displays as *Every 14 days*. The same page holds proxy settings with a
-**Test Proxy** button.
-
-Two details that surprise people:
-
-- **A startup check never pops a window.** If an update is found at startup the app only records the
-  fact; you see it when you open **Help > Check for Updates...** yourself.
-- **The Windows system proxy is deliberately bypassed** unless you configure a proxy on this page.
-
-Administrators can disable all of this by policy, in which case the Updates page is greyed out and the
-**Check for Updates...** menu item is disabled.
-
----
-
-## Maintained by
-
-<a href="https://geseidl.ro/en/servicii-it"><img src="https://geseidl.ro/assets/icons/logo-green.png" alt="Geseidl Consulting Group" height="40"></a>
-
-This fork is maintained by [Geseidl IT Solutions](https://geseidl.ro/en/servicii-it), part of
-[Geseidl Consulting Group](https://geseidl.ro/en).
-
-## Star the project
-
-If this project helps you, please [star the repository](https://github.com/robertpopa22/mRemoteNG).
-
-Some of the community tools we use set a public-star minimum before they will work with a project. [Qodo's free plan for open source](https://docs.qodo.ai/open-source-program) requires at least 200 stars on this repository, or on another public repository in the same GitHub organization. Other tools we use ask for more than that. A star is what keeps those tools available here.
+**Повідомити про помилку.** [Issues на GitHub](https://github.com/mishka1c/mRemoteNX/issues) або
+[на Gitea](https://gitea.mykino.uk/mishka1c/mRemoteNX/issues). Якщо програма аварійно завершилась,
+вікно помилки має кнопку **Submit Error** — вона відкриває в браузері заповнену форму, яку ви
+надсилаєте самі. Без натискання нічого нікуди не надсилається.

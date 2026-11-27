@@ -119,7 +119,7 @@ namespace mRemoteNG.UI.Forms
 
             // Version — centered beneath the title.
             using Font versionFont = new("Segoe UI", 16f * 96f / 72f * scale, FontStyle.Regular, GraphicsUnit.Pixel);
-            string versionText = $"v. {GeneralAppInfo.ApplicationVersion} — Community Edition";
+            string versionText = $"v. {GeneralAppInfo.ApplicationVersion}";
             SizeF versionSize = g.MeasureString(versionText, versionFont);
             g.DrawString(versionText, versionFont, whiteBrush, (Width - versionSize.Width) / 2f, tops.Version);
 
@@ -131,7 +131,7 @@ namespace mRemoteNG.UI.Forms
 
             // Tagline — AI-assisted badge line, smaller than the subtitle.
             using Font taglineFont = new("Segoe UI", 11f * 96f / 72f * scale, FontStyle.Italic, GraphicsUnit.Pixel);
-            const string tagline = "AI-assisted open source · 16 protocols · .NET 10";
+            const string tagline = "Password-protected · 16 protocols · .NET 10";
             SizeF taglineSize = g.MeasureString(tagline, taglineFont);
             g.DrawString(tagline, taglineFont, whiteBrush, (Width - taglineSize.Width) / 2f, tops.Tagline);
 

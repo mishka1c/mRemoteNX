@@ -15,21 +15,21 @@ namespace mRemoteNG.App.Info
     public static partial class GeneralAppInfo
     {
         public const string UrlHome = "https://mremoteng.org";
-        // The upstream donate URL (mremoteng.org/contribute) 404s. Donations for this fork go to
-        // the maintainer's non-profit — the Geseidl Association for Sport and Health.
-        public const string UrlDonate = "https://geseidl.ro/en/donate";
+        // mRemoteNX takes no donations; the About box and Help menu hide the donate entries.
+        public const string UrlDonate = "";
         public const string UrlForum = "https://github.com/orgs/mRemoteNG/discussions";
         public const string UrlChat = "https://app.element.io/#/room/#mremoteng:matrix.org";
         public const string UrlCommunity = "https://www.reddit.com/r/mRemoteNG";
         public const string UrlBugs = "https://github.com/mishka1c/mRemoteNX/issues/new";
         public const string CrashReportOwner = "mishka1c";
         public const string CrashReportRepo = "mRemoteNX";
-        public const string UrlDocumentation = "https://mremoteng.readthedocs.io/en/latest/";
+        public const string UrlDocumentation = "https://github.com/mishka1c/mRemoteNX/blob/main/docs/USER-GUIDE.md";
 
         // Fork-specific URLs
         public const string ForkOwner = "mishka1c";
         public const string ForkRepo = "mRemoteNX";
         public const string UrlForkHome = "https://github.com/mishka1c/mRemoteNX";
+        public const string UrlMainRepository = "https://gitea.mykino.uk/mishka1c/mRemoteNX";
         public const string UrlForkStars = "https://github.com/mishka1c/mRemoteNX/stargazers";
         public const string UrlForkReleases = "https://github.com/mishka1c/mRemoteNX/releases";
         public const string UrlForkChangelog = "https://github.com/mishka1c/mRemoteNX/blob/main/CHANGELOG.md";
