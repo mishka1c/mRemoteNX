@@ -390,7 +390,7 @@ jobs:
       - name: (10b) Submit ZIP signing request to SignPath
         if: env.SIGNPATH_CONFIGURED == 'true'
         id: sign
-        uses: signpath/github-action-submit-signing-request@b9d91eadd323de506c0c81cf0c7fe7438f3360fd # v2
+        uses: signpath/github-action-submit-signing-request@a2c5b60d9c75f073142b653c354b632eedce097b # v2
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '${{ secrets.SIGNPATH_ORGANIZATION_ID }}'
@@ -414,7 +414,7 @@ jobs:
       - name: (10d) Submit MSI signing request to SignPath
         if: env.SIGNPATH_CONFIGURED == 'true' && matrix.platform == 'x64' && matrix.selfcontained == false
         id: sign-msi
-        uses: signpath/github-action-submit-signing-request@b9d91eadd323de506c0c81cf0c7fe7438f3360fd # v2
+        uses: signpath/github-action-submit-signing-request@a2c5b60d9c75f073142b653c354b632eedce097b # v2
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '${{ secrets.SIGNPATH_ORGANIZATION_ID }}'
