@@ -23,7 +23,7 @@ namespace mRemoteNG.App.Initialization
             if (UI.Forms.FrmMain.IsShuttingDown)
                 return;
 
-            // mRemotePass: the startup connections must be protected by the application password.
+            // mRemoteNX: the startup connections must be protected by the application password.
             Security.AppPasswordPolicy.EnsureConnectionsProtected();
 
             // Restore additional connection files from previous session (#2331)

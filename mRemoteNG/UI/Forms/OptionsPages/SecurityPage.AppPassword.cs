@@ -1,11 +1,12 @@
 using System.Runtime.Versioning;
 using System.Windows.Forms;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.UI.Controls;
 
 namespace mRemoteNG.UI.Forms.OptionsPages
 {
-    // mRemotePass: application password settings, built in code so the designer file stays upstream's.
+    // mRemoteNX: application password settings, built in code so the designer file stays upstream's.
     public sealed partial class SecurityPage
     {
         private MrngGroupBox groupAppPassword = null!;
@@ -19,7 +20,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             chkRequireAppPassword = new MrngCheckBox
             {
                 AutoSize = true,
-                Text = "Require the application password at startup (also encrypts the whole connections file)",
+                Text = Language.AppPassword_Require,
                 Margin = new Padding(4),
             };
             chkRequireAppPassword.CheckedChanged += (_, _) => UpdateAppPasswordControls();
@@ -55,21 +56,21 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             layout.Controls.Add(new MrngLabel
             {
                 AutoSize = true,
-                Text = "Close the application after this many wrong passwords:",
+                Text = Language.AppPassword_MaxAttempts,
                 Anchor = AnchorStyles.Left,
             }, 0, 1);
             layout.Controls.Add(numberBoxMaxAttempts, 1, 1);
             layout.Controls.Add(new MrngLabel
             {
                 AutoSize = true,
-                Text = "Lock the window after this many idle minutes (0 = never):",
+                Text = Language.AppPassword_IdleLock,
                 Anchor = AnchorStyles.Left,
             }, 0, 2);
             layout.Controls.Add(numberBoxIdleLockMinutes, 1, 2);
 
             groupAppPassword = new MrngGroupBox
             {
-                Text = "Application password (mRemotePass)",
+                Text = Language.AppPassword_GroupTitle,
                 Dock = DockStyle.Top,
                 Height = 120,
             };

@@ -3000,4 +3000,53 @@ Loader: {3}</value>
   <data name="WindowedFullscreenReturn" xml:space="preserve">
     <value>Return to tab (Ctrl+Alt+Enter)</value>
   </data>
+  <data name="AppPassword_GroupTitle" xml:space="preserve">
+    <value>Application password</value>
+  </data>
+  <data name="AppPassword_Require" xml:space="preserve">
+    <value>Require the application password at startup (also encrypts the whole connections file)</value>
+  </data>
+  <data name="AppPassword_MaxAttempts" xml:space="preserve">
+    <value>Close the application after this many wrong passwords:</value>
+  </data>
+  <data name="AppPassword_IdleLock" xml:space="preserve">
+    <value>Lock the window after this many idle minutes (0 = never):</value>
+  </data>
+  <data name="AppPassword_CreateIntro" xml:space="preserve">
+    <value>mRemoteNX protects the application and all connections with one password.
+
+Create the application password now. It encrypts the connections file (AES-256-GCM) and is asked for at every start and after the idle lock.
+
+There is no way to recover it: if it is lost, the saved connections cannot be decrypted.</value>
+  </data>
+  <data name="AppPassword_NotEntered" xml:space="preserve">
+    <value>The application password was not entered.</value>
+  </data>
+  <data name="AppPassword_WrongAttempt" xml:space="preserve">
+    <value>Wrong application password ({0} of {1}).</value>
+  </data>
+  <data name="AppPassword_TooManyAttempts" xml:space="preserve">
+    <value>The application password was entered wrong {0} times.</value>
+  </data>
+  <data name="AppPassword_ConnectionsNotLoaded" xml:space="preserve">
+    <value>The connections could not be loaded, so the application password cannot be checked.</value>
+  </data>
+  <data name="AppPassword_NotCreated" xml:space="preserve">
+    <value>No application password was created.</value>
+  </data>
+  <data name="AppPassword_WillClose" xml:space="preserve">
+    <value>The application will now close.</value>
+  </data>
+  <data name="AppPassword_CannotDisableProtection" xml:space="preserve">
+    <value>The application password is required (File &gt; Options &gt; Security), so password protection cannot be turned off.</value>
+  </data>
+  <data name="AboutNx_Stats" xml:space="preserve">
+    <value>Application password · encrypted connections file · idle lock</value>
+  </data>
+  <data name="AboutNx_Version" xml:space="preserve">
+    <value>Version {0} [build {1}]{2} — .NET 10, 16 protocols{3}</value>
+  </data>
+  <data name="AboutNx_Story" xml:space="preserve">
+    <value>mRemoteNX is a password-protected fork of mRemoteNG: one application password unlocks the program and encrypts the whole connections file. It stands - with respect and gratitude - on almost two decades of work by the mRemoteNG project: Felix Deimel, Riley McArdle, the mRemoteNG Dev Team and the mRemoteNG Community Edition maintainers. Their links live on the right.</value>
+  </data>
 </root>

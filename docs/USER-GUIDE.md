@@ -77,7 +77,7 @@ mRemoteNX — окрема програма. Вона ставиться пор�
 
 ## 4. Налаштування безпеки
 
-**File → Options → Security**, група **Application password (mRemotePass)**:
+**Файл → Параметри → Безпека** (File → Options → Security), група **Пароль програми** (Application password):
 
 | Параметр | Що робить | За замовчуванням |
 |---|---|---|
@@ -97,7 +97,7 @@ PBKDF2. Більше ітерацій — повільніший підбір п
 Пароль змінюється через властивість **Password protect** кореневого вузла **Connections**. Поки
 пароль програми обов'язковий, цю властивість вимкнути не можна, тому:
 
-1. **File → Options → Security**: зніміть **Require the application password at startup** → **OK**.
+1. **File → Options → Security**: зніміть **Вимагати пароль програми під час запуску** (Require the application password at startup) → **OK**.
 2. Виділіть вузол **Connections**, на панелі **Config** встановіть **Password protect** = **No**
    і введіть поточний пароль.
 3. Встановіть **Password protect** = **Yes** і двічі введіть новий пароль.

@@ -212,7 +212,7 @@ create/delete a theme (delete disabled for base themes).
 | `numberBoxKdfIterations` | KDF iterations | `OSP.EncryptionKeyDerivationIterations` |
 | `btnTestSettings` | Test Settings | serializes the live tree, reports elapsed time |
 | `txtPasswdGenerator`+`btnPasswdGenerator` | ad-hoc password encryptor → clipboard, auto-clears 30s | not persisted |
-| `chkRequireAppPassword` (group "Application password (mRemotePass)") | Require the application password at startup (also encrypts the whole connections file) | `OSP.RequireAppPassword` (default on; the password is the connections master password; forces `EncryptCompleteConnectionsFile`) |
+| `chkRequireAppPassword` (group "Application password", `Language.AppPassword_GroupTitle`) | Require the application password at startup (also encrypts the whole connections file) | `OSP.RequireAppPassword` (default on; the password is the connections master password; forces `EncryptCompleteConnectionsFile`) |
 | `numberBoxMaxAttempts` | Close the application after this many wrong passwords | `OSP.AppPasswordMaxAttempts` (default 15, 1–100) |
 | `numberBoxIdleLockMinutes` | Lock the window after this many idle minutes (0 = never) | `OSP.AutoLockIdleMinutes` (default 15, 0–1440) |
 

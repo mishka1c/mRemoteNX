@@ -8415,5 +8415,140 @@ namespace mRemoteNG.Resources.Language {
                 return ResourceManager.GetString("DoNotRestoreOnRdpMinimize", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Application password.
+        /// </summary>
+        internal static string AppPassword_GroupTitle {
+            get {
+                return ResourceManager.GetString("AppPassword_GroupTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Require the application password at startup (also encrypts the whole connections file).
+        /// </summary>
+        internal static string AppPassword_Require {
+            get {
+                return ResourceManager.GetString("AppPassword_Require", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close the application after this many wrong passwords:.
+        /// </summary>
+        internal static string AppPassword_MaxAttempts {
+            get {
+                return ResourceManager.GetString("AppPassword_MaxAttempts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Lock the window after this many idle minutes (0 = never):.
+        /// </summary>
+        internal static string AppPassword_IdleLock {
+            get {
+                return ResourceManager.GetString("AppPassword_IdleLock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to mRemoteNX protects the application and all connections with one password..
+        /// </summary>
+        internal static string AppPassword_CreateIntro {
+            get {
+                return ResourceManager.GetString("AppPassword_CreateIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The application password was not entered..
+        /// </summary>
+        internal static string AppPassword_NotEntered {
+            get {
+                return ResourceManager.GetString("AppPassword_NotEntered", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong application password ({0} of {1})..
+        /// </summary>
+        internal static string AppPassword_WrongAttempt {
+            get {
+                return ResourceManager.GetString("AppPassword_WrongAttempt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The application password was entered wrong {0} times..
+        /// </summary>
+        internal static string AppPassword_TooManyAttempts {
+            get {
+                return ResourceManager.GetString("AppPassword_TooManyAttempts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The connections could not be loaded, so the application password cannot be checked..
+        /// </summary>
+        internal static string AppPassword_ConnectionsNotLoaded {
+            get {
+                return ResourceManager.GetString("AppPassword_ConnectionsNotLoaded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No application password was created..
+        /// </summary>
+        internal static string AppPassword_NotCreated {
+            get {
+                return ResourceManager.GetString("AppPassword_NotCreated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The application will now close..
+        /// </summary>
+        internal static string AppPassword_WillClose {
+            get {
+                return ResourceManager.GetString("AppPassword_WillClose", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The application password is required (File &gt; Options &gt; Security), so password protection cannot be turned off..
+        /// </summary>
+        internal static string AppPassword_CannotDisableProtection {
+            get {
+                return ResourceManager.GetString("AppPassword_CannotDisableProtection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Application password · encrypted connections file · idle lock.
+        /// </summary>
+        internal static string AboutNx_Stats {
+            get {
+                return ResourceManager.GetString("AboutNx_Stats", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} [build {1}]{2} — .NET 10, 16 protocols{3}.
+        /// </summary>
+        internal static string AboutNx_Version {
+            get {
+                return ResourceManager.GetString("AboutNx_Version", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to mRemoteNX is a password-protected fork of mRemoteNG: one application password unlocks the program and encrypts the whole connections file. It stands - with respect and gratitude - on almost two decades of work by the mRemoteNG project: Felix Deimel, Riley McArdle, the mRemoteNG Dev Team and the mRemoteNG Community Edition maintainers. Their links live on the right..
+        /// </summary>
+        internal static string AboutNx_Story {
+            get {
+                return ResourceManager.GetString("AboutNx_Story", resourceCulture);
+            }
+        }
     }
 }

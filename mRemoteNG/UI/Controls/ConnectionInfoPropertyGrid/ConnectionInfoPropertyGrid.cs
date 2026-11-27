@@ -453,7 +453,7 @@ namespace mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid {
                 {
                     rootInfo.Password = true;
                     Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
-                        "The application password is required (Options > Security), so password protection cannot be turned off.");
+                        Language.AppPassword_CannotDisableProtection);
                     return;
                 }
 

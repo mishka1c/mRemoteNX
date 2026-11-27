@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -7,13 +8,14 @@ using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Security
 {
     /// <summary>
-    /// mRemotePass application password policy.
+    /// mRemoteNX application password policy.
     ///
     /// One password protects both the application and the connections file: it is the
     /// connections master password, so the AES-256-GCM key that encrypts the file is derived
@@ -78,7 +80,7 @@ namespace mRemoteNG.Security
                 previousPromptShown = true;
                 Optional<SecureString> password = PasswordPrompt(label(), false);
                 if ((!password.Any() || password.First().Length == 0) && !_unlockedOnce)
-                    Terminate("The application password was not entered.");
+                    Terminate(Language.AppPassword_NotEntered);
 
                 return password;
             };
@@ -99,10 +101,10 @@ namespace mRemoteNG.Security
 
             _failedAttempts++;
             Runtime.MessageCollector?.AddMessage(MessageClass.WarningMsg,
-                $"Wrong application password ({_failedAttempts} of {MaxAttempts}).");
+                string.Format(CultureInfo.CurrentCulture, Language.AppPassword_WrongAttempt, _failedAttempts, MaxAttempts));
 
             if (_failedAttempts >= MaxAttempts)
-                Terminate($"The application password was entered wrong {_failedAttempts} times.");
+                Terminate(string.Format(CultureInfo.CurrentCulture, Language.AppPassword_TooManyAttempts, _failedAttempts));
         }
 
         public static void RegisterSuccessfulUnlock()
@@ -128,7 +130,7 @@ namespace mRemoteNG.Security
 
             if (root is null)
             {
-                Terminate("The connections could not be loaded, so the application password cannot be checked.");
+                Terminate(Language.AppPassword_ConnectionsNotLoaded);
                 return;
             }
 
@@ -140,17 +142,12 @@ namespace mRemoteNG.Security
                     ? "SQL Server"
                     : Path.GetFileName(ConnectionsService.GetStartupConnectionFileName());
 
-                MessageBox.Show(
-                    "mRemotePass protects the application and all connections with one password.\n\n" +
-                    "Create the application password now. It encrypts the connections file " +
-                    "(AES-256-GCM) and is asked for at every start and after the idle lock.\n\n" +
-                    "There is no way to recover it: if it is lost, the saved connections cannot be decrypted.",
-                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Language.AppPassword_CreateIntro, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 Optional<SecureString> password = PasswordPrompt(label, true);
                 if (!password.Any() || password.First().Length == 0)
                 {
-                    Terminate("No application password was created.");
+                    Terminate(Language.AppPassword_NotCreated);
                     return;
                 }
 
@@ -173,10 +170,10 @@ namespace mRemoteNG.Security
 
         private static void TerminateProcess(string reason)
         {
-            Runtime.MessageCollector?.AddMessage(MessageClass.ErrorMsg, $"Application password: {reason} Exiting.");
+            Runtime.MessageCollector?.AddMessage(MessageClass.ErrorMsg, $"{reason} {Language.AppPassword_WillClose}");
             try
             {
-                MessageBox.Show(reason + "\n\nThe application will now close.",
+                MessageBox.Show(reason + Environment.NewLine + Environment.NewLine + Language.AppPassword_WillClose,
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             catch (InvalidOperationException)

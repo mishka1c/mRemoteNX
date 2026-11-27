@@ -1995,4 +1995,65 @@ mRemoteNG зараз припинить роботу і почне процес 
     <value>Зберігати з'єднання при виході</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AppPassword_GroupTitle" xml:space="preserve">
+    <value>Пароль програми</value>
+  </data>
+  <data name="AppPassword_Require" xml:space="preserve">
+    <value>Вимагати пароль програми під час запуску (також шифрує весь файл підключень)</value>
+  </data>
+  <data name="AppPassword_MaxAttempts" xml:space="preserve">
+    <value>Закривати програму після стількох невірних паролів:</value>
+  </data>
+  <data name="AppPassword_IdleLock" xml:space="preserve">
+    <value>Блокувати вікно після стількох хвилин простою (0 — ніколи):</value>
+  </data>
+  <data name="AppPassword_CreateIntro" xml:space="preserve">
+    <value>mRemoteNX захищає програму та всі підключення одним паролем.
+
+Створіть пароль програми зараз. Він шифрує файл підключень (AES-256-GCM) і запитується під час кожного запуску та після блокування через простій.
+
+Відновити його неможливо: якщо пароль втрачено, збережені підключення не вдасться розшифрувати.</value>
+  </data>
+  <data name="AppPassword_NotEntered" xml:space="preserve">
+    <value>Пароль програми не введено.</value>
+  </data>
+  <data name="AppPassword_WrongAttempt" xml:space="preserve">
+    <value>Невірний пароль програми ({0} з {1}).</value>
+  </data>
+  <data name="AppPassword_TooManyAttempts" xml:space="preserve">
+    <value>Пароль програми введено невірно стільки разів: {0}.</value>
+  </data>
+  <data name="AppPassword_ConnectionsNotLoaded" xml:space="preserve">
+    <value>Не вдалося завантажити підключення, тому пароль програми неможливо перевірити.</value>
+  </data>
+  <data name="AppPassword_NotCreated" xml:space="preserve">
+    <value>Пароль програми не створено.</value>
+  </data>
+  <data name="AppPassword_WillClose" xml:space="preserve">
+    <value>Програма зараз закриється.</value>
+  </data>
+  <data name="AppPassword_CannotDisableProtection" xml:space="preserve">
+    <value>Пароль програми обов'язковий (Файл → Параметри → Безпека), тому захист паролем вимкнути не можна.</value>
+  </data>
+  <data name="AboutNx_Stats" xml:space="preserve">
+    <value>Пароль програми · зашифрований файл підключень · блокування після простою</value>
+  </data>
+  <data name="AboutNx_Version" xml:space="preserve">
+    <value>Версія {0} [збірка {1}]{2} — .NET 10, 16 протоколів{3}</value>
+  </data>
+  <data name="AboutNx_Story" xml:space="preserve">
+    <value>mRemoteNX — захищене паролем відгалуження mRemoteNG: один пароль програми відкриває її та шифрує весь файл підключень. Воно спирається — з повагою і вдячністю — на майже двадцять років роботи проєкту mRemoteNG: Felix Deimel, Riley McArdle, команди mRemoteNG Dev Team і супровідників mRemoteNG Community Edition. Їхні посилання — праворуч.</value>
+  </data>
+  <data name="ForkHeader" xml:space="preserve">
+    <value>Цей форк</value>
+  </data>
+  <data name="ForkGitHubPage" xml:space="preserve">
+    <value>Сторінка GitHub</value>
+  </data>
+  <data name="ForkReleases" xml:space="preserve">
+    <value>Релізи</value>
+  </data>
+  <data name="ForkChangelog" xml:space="preserve">
+    <value>Історія змін</value>
+  </data>
 </root>

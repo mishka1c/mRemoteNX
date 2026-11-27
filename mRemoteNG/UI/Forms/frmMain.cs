@@ -118,7 +118,7 @@ namespace mRemoteNG.UI.Forms
         private bool _runtimeDiagnosticsPulseStarted;
         private const int LegacyAutoLockIdleThresholdMs = 5 * 60 * 1000;
 
-        // mRemotePass: under the application password policy the idle threshold is configurable
+        // mRemoteNX: under the application password policy the idle threshold is configurable
         // (Options > Security); otherwise the upstream five minutes still apply to AutoLockOnMinimize.
         private static int AutoLockIdleThresholdMs => mRemoteNG.Security.AppPasswordPolicy.Enabled && mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes > 0
             ? mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes * 60 * 1000

@@ -6,6 +6,13 @@
 Історію змін mRemoteNG до відгалуження mRemoteNX можна переглянути в
 [репозиторії mRemoteNG](https://github.com/mRemoteNG/mRemoteNG/blob/develop/CHANGELOG.md).
 
+## [Unreleased]
+
+### Змінено
+
+- Повідомлення про пароль програми, налаштування пароля та вікно «About» перекладено українською.
+  Мова береться з налаштувань Windows або з **Параметри → Зовнішній вигляд**.
+
 ## [1.85.0] - 2026-11-27
 
 Перша версія mRemoteNX, відгалужена від mRemoteNG Community Edition 1.84.0.

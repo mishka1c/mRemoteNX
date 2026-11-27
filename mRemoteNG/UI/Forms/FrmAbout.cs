@@ -27,9 +27,6 @@ namespace mRemoteNG.UI.Forms
             ApplyTheme();
         }
 
-        // One-line summary of what mRemoteNX adds, shown under the version.
-        private const string LiveStats = "Application password · encrypted connections file · idle lock";
-
         private void ApplyLanguage()
         {
             lblLicense.Text = Language.ReleasedUnderGPL;
@@ -44,14 +41,10 @@ namespace mRemoteNG.UI.Forms
             var puttyVersionStr = (puttyVersion.Major > 0 || puttyVersion.Minor > 0)
                 ? $" | PuTTY {puttyVersion.Major}.{puttyVersion.Minor}"
                 : string.Empty;
-            lblVersion.Text = $@"Version {GeneralAppInfo.ApplicationVersion} [build {GeneralAppInfo.BuildId}]{puttyVersionStr} — .NET 10, 16 protocols{PortableSuffix()}";
-            lblStats.Text = LiveStats;
-            lblStory.Text =
-                "mRemoteNX is a password-protected fork of mRemoteNG: one application password " +
-                "unlocks the program and encrypts the whole connections file. It stands - with " +
-                "respect and gratitude - on almost two decades of work by the mRemoteNG project: " +
-                "Felix Deimel, Riley McArdle, the mRemoteNG Dev Team and the mRemoteNG Community " +
-                "Edition maintainers. Their links live on the right.";
+            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, Language.AboutNx_Version,
+                GeneralAppInfo.ApplicationVersion, GeneralAppInfo.BuildId, puttyVersionStr, PortableSuffix());
+            lblStats.Text = Language.AboutNx_Stats;
+            lblStory.Text = Language.AboutNx_Story;
             lblForkHeader.Text = $@"{Language.ForkHeader} ({GeneralAppInfo.ForkOwner})";
             llForkGitHub.Text = Language.ForkGitHubPage;
             llForkReleases.Text = Language.ForkReleases;
