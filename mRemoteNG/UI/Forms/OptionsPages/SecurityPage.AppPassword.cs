@@ -5,7 +5,7 @@ using mRemoteNG.UI.Controls;
 
 namespace mRemoteNG.UI.Forms.OptionsPages
 {
-    // mRemotePass: налаштування пароля програми. Елементи створюються в коді, щоб файл дизайнера лишився як в upstream.
+    // mRemotePass: application password settings, built in code so the designer file stays upstream's.
     public sealed partial class SecurityPage
     {
         private MrngGroupBox groupAppPassword = null!;
@@ -75,7 +75,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             };
             groupAppPassword.Controls.Add(layout);
 
-            // Порядок Dock зворотний до z-order: індекс 0 докується останнім, тобто внизу.
+            // Dock order follows the reverse z-order: index 0 docks last, i.e. at the bottom.
             Controls.Add(groupAppPassword);
             Controls.SetChildIndex(groupAppPassword, 0);
         }
@@ -86,7 +86,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             numberBoxMaxAttempts.Enabled = required;
             numberBoxIdleLockMinutes.Enabled = required;
 
-            // Політика завжди записує повністю зашифрований файл.
+            // The policy always writes a fully encrypted file.
             if (required)
                 chkEncryptCompleteFile.Checked = true;
             chkEncryptCompleteFile.Enabled = !required && !(pageRegSettingsInstance?.EncryptCompleteConnectionsFile.IsSet ?? false);

@@ -118,8 +118,8 @@ namespace mRemoteNG.UI.Forms
         private bool _runtimeDiagnosticsPulseStarted;
         private const int LegacyAutoLockIdleThresholdMs = 5 * 60 * 1000;
 
-        // mRemotePass: якщо увімкнено пароль програми, час простою задається в налаштуваннях
-        // (Options > Security); інакше для AutoLockOnMinimize діють стандартні п'ять хвилин.
+        // mRemotePass: under the application password policy the idle threshold is configurable
+        // (Options > Security); otherwise the upstream five minutes still apply to AutoLockOnMinimize.
         private static int AutoLockIdleThresholdMs => mRemoteNG.Security.AppPasswordPolicy.Enabled && mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes > 0
             ? mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes * 60 * 1000
             : LegacyAutoLockIdleThresholdMs;
@@ -1270,8 +1270,8 @@ namespace mRemoteNG.UI.Forms
                 WindowState = FormWindowState.Minimized;
             }
 
-            // Коли увімкнено пароль програми, заблоковане вікно завжди ховається в трей,
-            // щоб ні його вміст, ні мініатюра на панелі завдань не лишались на екрані.
+            // Under the application password policy a locked window is always hidden to the
+            // tray, so neither its contents nor its taskbar thumbnail stay on screen.
             if (!Properties.OptionsAppearancePage.Default.MinimizeToTray && !mRemoteNG.Security.AppPasswordPolicy.Enabled)
                 return;
 
@@ -1302,8 +1302,8 @@ namespace mRemoteNG.UI.Forms
                     ? Language.SQLServer.TrimEnd(':')
                     : Path.GetFileName(ConnectionsService.GetStartupConnectionFileName());
 
-                // Коли увімкнено пароль програми, запит повторюється, доки пароль не буде вірним,
-                // користувач не скасує або ліміт спроб не закриє програму.
+                // Under the application password policy the prompt repeats until the password
+                // is right, the user cancels, or the attempt limit closes the application.
                 while (true)
                 {
                     Optional<System.Security.SecureString> password = MiscTools.PasswordDialog(passwordName, false);

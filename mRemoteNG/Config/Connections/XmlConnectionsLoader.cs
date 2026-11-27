@@ -25,8 +25,8 @@ namespace mRemoteNG.Config.Connections
             : this(connectionFilePath, messageCollector,
                    (fileNameToPrompt) => MiscTools.PasswordDialog(Path.GetFileName(connectionFilePath), false))
         {
-            // Через політику пароля програми проходить лише власне завантаження підключень
-            // програмою; виклики зі своїм запитом пароля (тести, інструменти) — ні.
+            // Only the application's own load of its connections goes through the
+            // application password policy; a caller with its own requestor (tests, tools) does not.
             _usePasswordPolicy = true;
         }
 

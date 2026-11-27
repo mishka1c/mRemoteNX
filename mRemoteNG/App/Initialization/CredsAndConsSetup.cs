@@ -23,7 +23,7 @@ namespace mRemoteNG.App.Initialization
             if (UI.Forms.FrmMain.IsShuttingDown)
                 return;
 
-            // mRemotePass: підключення, завантажені при старті, мають бути захищені паролем програми.
+            // mRemotePass: the startup connections must be protected by the application password.
             Security.AppPasswordPolicy.EnsureConnectionsProtected();
 
             // Restore additional connection files from previous session (#2331)

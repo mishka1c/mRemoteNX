@@ -13,17 +13,17 @@ using mRemoteNG.Tree.Root;
 namespace mRemoteNG.Security
 {
     /// <summary>
-    /// Політика пароля програми (mRemotePass).
+    /// mRemotePass application password policy.
     ///
-    /// Один пароль захищає і програму, і файл підключень: це майстер-пароль підключень,
-    /// тому ключ AES-256-GCM, яким шифрується файл, виводиться саме з нього (PBKDF2).
-    /// Коли <see cref="Enabled"/> увімкнено:
+    /// One password protects both the application and the connections file: it is the
+    /// connections master password, so the AES-256-GCM key that encrypts the file is derived
+    /// from it (PBKDF2). When <see cref="Enabled"/> is set:
     /// <list type="bullet">
-    /// <item>програмою не можна користуватися, доки не введено пароль;</item>
-    /// <item>файл підключень без майстер-пароля отримує його при першому запуску
-    /// (користувач задає пароль, інакше програма закривається), і весь файл шифрується;</item>
-    /// <item>після <see cref="MaxAttempts"/> невдалих спроб поспіль програма закривається;</item>
-    /// <item>головне вікно блокується після <see cref="IdleLockMinutes"/> хвилин бездіяльності.</item>
+    /// <item>the application cannot be used until that password is entered;</item>
+    /// <item>a connections file without a master password gets one on first start (the user
+    /// sets it, or the application exits), and the whole file is encrypted;</item>
+    /// <item>after <see cref="MaxAttempts"/> wrong passwords in a row the application exits;</item>
+    /// <item>the main window locks after <see cref="IdleLockMinutes"/> minutes without input.</item>
     /// </list>
     /// </summary>
     [SupportedOSPlatform("windows")]
@@ -35,11 +35,11 @@ namespace mRemoteNG.Security
         private static int _failedAttempts;
         private static bool _unlockedOnce;
 
-        /// <summary>Показує діалог пароля; можна підмінити в тестах.</summary>
+        /// <summary>Replaceable for tests; shows the password dialog.</summary>
         internal static Func<string?, bool, Optional<SecureString>> PasswordPrompt { get; set; } =
             (label, newPassword) => MiscTools.PasswordDialog(label, newPassword);
 
-        /// <summary>Завершує процес; можна підмінити в тестах.</summary>
+        /// <summary>Replaceable for tests; terminates the process.</summary>
         internal static Action<string> Terminate { get; set; } = TerminateProcess;
 
         public static bool Enabled => Properties.OptionsSecurityPage.Default.RequireAppPassword;
@@ -53,16 +53,16 @@ namespace mRemoteNG.Security
             }
         }
 
-        /// <summary>Хвилини бездіяльності до блокування вікна; 0 вимикає блокування.</summary>
+        /// <summary>Idle minutes before the window locks; 0 disables the idle lock.</summary>
         public static int IdleLockMinutes => Math.Max(0, Properties.OptionsSecurityPage.Default.AutoLockIdleMinutes);
 
         public static int FailedAttempts => _failedAttempts;
 
         /// <summary>
-        /// Запит пароля під час розшифрування файлу підключень. Кожен запит після першого
-        /// означає, що попередню відповідь відхилено, тому він рахується як невдала спроба.
-        /// Якщо політика увімкнена, скасування до першого успішного входу закриває програму,
-        /// а досягнення ліміту спроб закриває її завжди.
+        /// Prompt used while the connections file is decrypted. Every prompt after the first
+        /// means the previous answer was rejected, so it is counted as a failed attempt. Under
+        /// the policy, cancelling before the first successful unlock exits the application,
+        /// and reaching the attempt limit always does.
         /// </summary>
         public static Func<Optional<SecureString>> CreateConnectionsPasswordRequestor(Func<string?> label)
         {
@@ -85,13 +85,13 @@ namespace mRemoteNG.Security
         }
 
         /// <summary>
-        /// Ліміт спроб для <see cref="Authentication.PasswordAuthenticator"/>: коли політика
-        /// увімкнена, ліміт контролює запит пароля вище, тому сам автентифікатор
-        /// не повинен здаватися раніше.
+        /// Attempt limit for a <see cref="Authentication.PasswordAuthenticator"/>: under the
+        /// policy the limit is enforced by the requestor above, so the authenticator itself
+        /// must not give up first.
         /// </summary>
         public static int AuthenticatorMaxAttempts(int defaultValue) => Enabled ? int.MaxValue : defaultValue;
 
-        /// <summary>Рахує невірний пароль і закриває програму, коли досягнуто ліміту.</summary>
+        /// <summary>Records a rejected password and exits once the limit is reached.</summary>
         public static void RegisterFailedAttempt()
         {
             if (!Enabled)
@@ -112,9 +112,9 @@ namespace mRemoteNG.Security
         }
 
         /// <summary>
-        /// Викликається після завантаження при старті. Перевіряє, що підключення захищені
-        /// майстер-паролем і весь файл шифрується; якщо пароля ще немає — просить його створити.
-        /// Якщо користувач відмовляється, програма закривається.
+        /// Called after the startup load. Makes sure the loaded connections are protected by a
+        /// master password and that the whole file is encrypted, asking the user to create the
+        /// password if there is none yet. Exits the application if the user refuses.
         /// </summary>
         public static void EnsureConnectionsProtected()
         {
@@ -181,7 +181,7 @@ namespace mRemoteNG.Security
             }
             catch (InvalidOperationException)
             {
-                _ = 0; // Інтерфейсу немає — все одно виходимо.
+                _ = 0; // No UI available; exit anyway.
             }
 
             Environment.Exit(2);
