@@ -423,6 +423,9 @@ namespace mRemoteNG.Connection
                 SqlDatabaseMetaDataRetriever metaDataRetriever = new();
                 SqlDatabaseVersionVerifier versionVerifier = new(dbConnector);
                 bool triedCached = false;
+                string? sqlPasswordLabel = null;
+                Func<Optional<SecureString>> sqlPasswordPrompt =
+                    Security.AppPasswordPolicy.CreateConnectionsPasswordRequestor(() => sqlPasswordLabel);
                 connectionLoader = new SqlConnectionsLoader(
                     _localConnectionPropertiesSerializer,
                     _localConnectionPropertiesDataProvider,
@@ -442,7 +445,8 @@ namespace mRemoteNG.Connection
                         // Cached password was wrong or not set — clear cache and prompt
                         _cachedSqlEncryptionPassword?.Dispose();
                         _cachedSqlEncryptionPassword = null;
-                        Optional<SecureString> result = MiscTools.PasswordDialog(filename, false);
+                        sqlPasswordLabel = filename;
+                        Optional<SecureString> result = sqlPasswordPrompt();
                         if (result.Any())
                             _cachedSqlEncryptionPassword = result.First();
                         return result;

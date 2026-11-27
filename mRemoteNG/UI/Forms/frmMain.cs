@@ -116,7 +116,13 @@ namespace mRemoteNG.UI.Forms
         private readonly System.Windows.Forms.Timer _autoLockTimer = new() { Interval = 1000 };
         private readonly System.Windows.Forms.Timer _runtimeDiagnosticsPulseTimer = new() { Interval = 1000 };
         private bool _runtimeDiagnosticsPulseStarted;
-        private const int AutoLockIdleThresholdMs = 5 * 60 * 1000;
+        private const int LegacyAutoLockIdleThresholdMs = 5 * 60 * 1000;
+
+        // mRemotePass: якщо увімкнено пароль програми, час простою задається в налаштуваннях
+        // (Options > Security); інакше для AutoLockOnMinimize діють стандартні п'ять хвилин.
+        private static int AutoLockIdleThresholdMs => mRemoteNG.Security.AppPasswordPolicy.Enabled && mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes > 0
+            ? mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes * 60 * 1000
+            : LegacyAutoLockIdleThresholdMs;
         private volatile bool _autoLockKnownDisabledWhileIdle;
         private const int HOTKEY_ID_ACTIVATE = 1;
         private const int HT_CLOSE = 20;
@@ -1217,7 +1223,7 @@ namespace mRemoteNG.UI.Forms
             if (_autoLockKnownDisabledWhileIdle)
                 return;
 
-            if (!AutoLockEnabled())
+            if (!IdleLockEnabled())
             {
                 _autoLockKnownDisabledWhileIdle = true;
                 return;
@@ -1232,6 +1238,16 @@ namespace mRemoteNG.UI.Forms
             return rootNodeInfo is { Password: true, AutoLockOnMinimize: true };
         }
 
+        private static bool IdleLockEnabled()
+        {
+            if (AutoLockEnabled())
+                return true;
+
+            return mRemoteNG.Security.AppPasswordPolicy.Enabled
+                && mRemoteNG.Security.AppPasswordPolicy.IdleLockMinutes > 0
+                && GetConnectionRootNodeInfo() is { Password: true };
+        }
+
         private static RootNodeInfo? GetConnectionRootNodeInfo()
         {
             return Runtime.ConnectionsService.ConnectionTreeModel?.RootNodes
@@ -1241,7 +1257,8 @@ namespace mRemoteNG.UI.Forms
 
         private void EngageAutoLock(string reason)
         {
-            if (_isAutoLocked || !AutoLockEnabled())
+            bool idleLock = string.Equals(reason, "idle-timeout", StringComparison.Ordinal);
+            if (_isAutoLocked || !(idleLock ? IdleLockEnabled() : AutoLockEnabled()))
                 return;
 
             _isAutoLocked = true;
@@ -1253,7 +1270,9 @@ namespace mRemoteNG.UI.Forms
                 WindowState = FormWindowState.Minimized;
             }
 
-            if (!Properties.OptionsAppearancePage.Default.MinimizeToTray)
+            // Коли увімкнено пароль програми, заблоковане вікно завжди ховається в трей,
+            // щоб ні його вміст, ні мініатюра на панелі завдань не лишались на екрані.
+            if (!Properties.OptionsAppearancePage.Default.MinimizeToTray && !mRemoteNG.Security.AppPasswordPolicy.Enabled)
                 return;
 
             Runtime.NotificationAreaIcon ??= new NotificationAreaIcon();
@@ -1283,20 +1302,29 @@ namespace mRemoteNG.UI.Forms
                     ? Language.SQLServer.TrimEnd(':')
                     : Path.GetFileName(ConnectionsService.GetStartupConnectionFileName());
 
-                Optional<System.Security.SecureString> password = MiscTools.PasswordDialog(passwordName, false);
-                if (!password.Any() || password.First().Length == 0)
-                    return false;
-
-                bool matches = rootNodeInfo.IsPasswordMatch(password.First());
-                if (matches)
+                // Коли увімкнено пароль програми, запит повторюється, доки пароль не буде вірним,
+                // користувач не скасує або ліміт спроб не закриє програму.
+                while (true)
                 {
-                    _isAutoLocked = false;
-                    return true;
-                }
+                    Optional<System.Security.SecureString> password = MiscTools.PasswordDialog(passwordName, false);
+                    if (!password.Any() || password.First().Length == 0)
+                        return false;
 
-                Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
-                    "Autolock unlock request rejected: provided password did not match.");
-                return false;
+                    bool matches = rootNodeInfo.IsPasswordMatch(password.First());
+                    if (matches)
+                    {
+                        _isAutoLocked = false;
+                        mRemoteNG.Security.AppPasswordPolicy.RegisterSuccessfulUnlock();
+                        return true;
+                    }
+
+                    Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
+                        "Autolock unlock request rejected: provided password did not match.");
+                    mRemoteNG.Security.AppPasswordPolicy.RegisterFailedAttempt();
+
+                    if (!mRemoteNG.Security.AppPasswordPolicy.Enabled)
+                        return false;
+                }
             }
             finally
             {

@@ -156,6 +156,7 @@ namespace mRemoteNG.Config.Serializers
                 return false;
 
             PasswordAuthenticator authenticator = new(_cryptographyProvider, cipherText, AuthenticationRequestor);
+            authenticator.MaxAttempts = AppPasswordPolicy.AuthenticatorMaxAttempts(authenticator.MaxAttempts);
             bool authenticated = authenticator.Authenticate(password);
 
             if (!authenticated || authenticator.LastAuthenticatedPassword is null)

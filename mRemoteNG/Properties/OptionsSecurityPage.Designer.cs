@@ -82,5 +82,41 @@ namespace mRemoteNG.Properties {
                 this["cbSecurityPageInOptionMenu"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RequireAppPassword {
+            get {
+                return ((bool)(this["RequireAppPassword"]));
+            }
+            set {
+                this["RequireAppPassword"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int AppPasswordMaxAttempts {
+            get {
+                return ((int)(this["AppPasswordMaxAttempts"]));
+            }
+            set {
+                this["AppPasswordMaxAttempts"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int AutoLockIdleMinutes {
+            get {
+                return ((int)(this["AutoLockIdleMinutes"]));
+            }
+            set {
+                this["AutoLockIdleMinutes"] = value;
+            }
+        }
     }
 }

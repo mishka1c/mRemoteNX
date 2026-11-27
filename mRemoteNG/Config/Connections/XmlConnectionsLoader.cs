@@ -19,11 +19,15 @@ namespace mRemoteNG.Config.Connections
         private readonly string _connectionFilePath;
         private readonly MessageCollector _messageCollector;
         private readonly Func<string, Optional<SecureString>> _passwordRequestor;
+        private readonly bool _usePasswordPolicy;
 
         public XmlConnectionsLoader(string connectionFilePath, MessageCollector? messageCollector = null)
             : this(connectionFilePath, messageCollector,
                    (fileNameToPrompt) => MiscTools.PasswordDialog(Path.GetFileName(connectionFilePath), false))
         {
+            // Через політику пароля програми проходить лише власне завантаження підключень
+            // програмою; виклики зі своїм запитом пароля (тести, інструменти) — ні.
+            _usePasswordPolicy = true;
         }
 
         public XmlConnectionsLoader(string connectionFilePath, MessageCollector? messageCollector,
@@ -44,7 +48,9 @@ namespace mRemoteNG.Config.Connections
         {
             FileDataProvider dataProvider = new(_connectionFilePath);
             string xmlString = dataProvider.Load();
-            XmlConnectionsDeserializer deserializer = new(_connectionFilePath, () => PromptForPassword());
+            XmlConnectionsDeserializer deserializer = new(_connectionFilePath, _usePasswordPolicy
+                ? Security.AppPasswordPolicy.CreateConnectionsPasswordRequestor(() => Path.GetFileName(_connectionFilePath))
+                : () => PromptForPassword());
 
             // An empty file may indicate crash-time corruption (#1395).
             // Deserialize() returns null silently for empty input, so we must intercept here

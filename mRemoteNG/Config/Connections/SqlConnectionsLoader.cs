@@ -102,6 +102,7 @@ namespace mRemoteNG.Config.Connections
             PasswordAuthenticator authenticator = new(_cryptographyProvider, cipherText, () => AuthenticationRequestor(""),
                 static plaintext => string.Equals(plaintext, "ThisIsProtected", StringComparison.Ordinal)
                     || string.Equals(plaintext, "ThisIsNotProtected", StringComparison.Ordinal));
+            authenticator.MaxAttempts = Security.AppPasswordPolicy.AuthenticatorMaxAttempts(authenticator.MaxAttempts);
             bool authenticated = authenticator.Authenticate(new RootNodeInfo(RootNodeType.Connection).DefaultPassword.ConvertToSecureString());
 
             return authenticated && authenticator.LastAuthenticatedPassword is { } password

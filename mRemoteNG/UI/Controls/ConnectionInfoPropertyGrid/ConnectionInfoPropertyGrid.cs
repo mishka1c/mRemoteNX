@@ -449,6 +449,14 @@ namespace mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid {
 
                 rootInfo.PasswordString = password.First().ConvertToUnsecureString();
             } else {
+                if (Security.AppPasswordPolicy.Enabled)
+                {
+                    rootInfo.Password = true;
+                    Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
+                        "The application password is required (Options > Security), so password protection cannot be turned off.");
+                    return;
+                }
+
                 if (!CurrentPasswordVerified(rootInfo))
                 {
                     rootInfo.Password = true;

@@ -31,7 +31,7 @@ namespace mRemoteNG.Config.Connections
             try
             {
                 ICryptographyProvider cryptographyProvider = new CryptoProviderFactoryFromSettings().Build();
-                Serializers.ISerializer<Connection.ConnectionInfo, string> xmlConnectionsSerializer = XmlConnectionSerializerFactory.Build(cryptographyProvider, connectionTreeModel, _saveFilter, Properties.OptionsSecurityPage.Default.EncryptCompleteConnectionsFile);
+                Serializers.ISerializer<Connection.ConnectionInfo, string> xmlConnectionsSerializer = XmlConnectionSerializerFactory.Build(cryptographyProvider, connectionTreeModel, _saveFilter, Properties.OptionsSecurityPage.Default.EncryptCompleteConnectionsFile || Security.AppPasswordPolicy.Enabled);
 
                 RootNodeInfo? rootNode = connectionTreeModel.RootNodes.OfType<RootNodeInfo>().FirstOrDefault();
                 if (rootNode == null)

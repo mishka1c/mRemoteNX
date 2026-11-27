@@ -32,6 +32,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             InitializeComponent();
             PopulateEncryptionEngineDropDown();
             PopulateBlockCipherDropDown();
+            BuildAppPasswordGroup();
             ApplyTheme();
             PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Lock_16x);
         }
@@ -62,6 +63,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             comboBoxBlockCipher.Text =
                 Enum.GetName<BlockCipherModes>(Properties.OptionsSecurityPage.Default.EncryptionBlockCipherMode);
             numberBoxKdfIterations.Value = Properties.OptionsSecurityPage.Default.EncryptionKeyDerivationIterations;
+            LoadAppPasswordSettings();
         }
 
         public override void SaveSettings()
@@ -72,6 +74,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             if (comboBoxBlockCipher.SelectedItem is BlockCipherModes mode)
                 Properties.OptionsSecurityPage.Default.EncryptionBlockCipherMode = mode;
             Properties.OptionsSecurityPage.Default.EncryptionKeyDerivationIterations = (int)numberBoxKdfIterations.Value;
+            SaveAppPasswordSettings();
         }
 
         public override void LoadRegistrySettings()
