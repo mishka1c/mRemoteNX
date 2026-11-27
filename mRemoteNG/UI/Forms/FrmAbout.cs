@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 using mRemoteNG.App.Info;
 using mRemoteNG.Themes;
