@@ -1,15 +1,7 @@
 name: PR_Validation
 
+# mRemoteNX: runs only on demand (Actions -> PR_Validation -> Run workflow).
 on:
-  pull_request:
-    branches:
-      - v1.78.2-dev
-      - main
-  push:
-    branches:
-      - v1.78.2-dev
-      - main
-      - release/**
   workflow_dispatch:
 
 permissions: {}

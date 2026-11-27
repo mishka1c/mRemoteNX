@@ -1,9 +1,8 @@
 name: Nightly Build
 
+# mRemoteNX: builds only on demand (Actions -> Nightly Build -> Run workflow).
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions: {}
 
